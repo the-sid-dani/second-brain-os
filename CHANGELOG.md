@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-06-22
+
+### Removed
+
+- **`thinking-partner` skill** — dropped from the public bundle (kept in the dev fork). It's a generic Q&A/ideation skill, but trimmed to keep the public surface focused. **Skill count 45 → 44.** Dangling `/thinking-partner` references removed from the README (skills table, "what you can ask", quick-reference) and bootstrap's Day-2 loop.
+
+### Changed (extractor pipeline — design-skill source)
+
+The 14 bundled `design-*` skills now have a clean, regenerable source. They had
+migrated out of `daily-agents/.claude/skills/` into the **open-design** plugin
+(the `design:*` namespace, `github.com/nexu-io/open-design`), so the extractor
+could no longer find them — v0.3.0 worked around this by manually copying the 14
+out of the *public* repo on every release (circular, and guaranteed to go stale
+against the plugin).
+
+- **New vendored snapshot** at `.claude/vendor/design-skills/` — a committed,
+  asset-only, leak-clean copy of the 14 standalone skills, **generated from the
+  plugin** by `scripts/vendor-design-skills.mjs`. `.claude/vendor/` is not a
+  skill-load path, so these don't double-register against the live `design:*`
+  plugin in the dev fork.
+- **New generator** `scripts/vendor-design-skills.mjs` — transforms each plugin
+  skill (`<name>/` → `design-<name>/`: prefix `name:`, flatten the `description`
+  block scalar, drop plugin-only `triggers:`/`od:` keys, strip the plugin-relative
+  `skills-protocol.md` ref, curated standalone descriptions for the 3 skills whose
+  upstream text name-drops a non-bundled skill or lacks a "Use when" clause). A
+  `--check` mode diffs the output against an oracle; verified byte-identical to the
+  v0.3.0 public skills. Re-run it to refresh against a newer plugin checkout —
+  this is the de-staling tool.
+- **`extract-template.sh`** (v0.1.11 → v0.1.12): the skill-copy loop reads
+  `design-*` entries from `$DESIGN_VENDOR_REL` instead of `.claude/skills/`; a new
+  pre-flight sentinel fails closed if the snapshot is missing or short of 14; the
+  source-tree leakage probe now covers the vendored design paths. Extraction is
+  again fully reproducible from `$SOURCE_DIR` — no manual cp step. (`copied 44
+  skills (0 missing)`; previously the 14 design-* logged "missing in source".)
+
+The design-vendor change is output-neutral (the 14 design skills are byte-identical to
+v0.3.0); the only public content change in 0.3.1 is the `thinking-partner` removal above.
+
 ## [0.3.0] - 2026-06-22
 
 ### Added — v0.3.0 (Areas / HQ model + 6-folder PARA + MCP setup fix)

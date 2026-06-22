@@ -28,7 +28,7 @@ Three pieces fit together:
 
 ### 1. **Skills** — pre-built workflows in `.claude/skills/`
 
-A skill is just a markdown file with frontmatter that tells Claude when to use it. The bundle ships 45 of them: `briefing` runs morning briefs, `contact` looks up people, `new-project` scaffolds projects, `design-saas-landing` renders HTML mockups, and so on. When you type *"morning, what's on my plate?"*, Claude reads every skill's description and picks the best match. You can also invoke a skill explicitly with `/briefing`, `/contact <name>`, etc.
+A skill is just a markdown file with frontmatter that tells Claude when to use it. The bundle ships 44 of them: `briefing` runs morning briefs, `contact` looks up people, `new-project` scaffolds projects, `design-saas-landing` renders HTML mockups, and so on. When you type *"morning, what's on my plate?"*, Claude reads every skill's description and picks the best match. You can also invoke a skill explicitly with `/briefing`, `/contact <name>`, etc.
 
 **The one skill you'll always run first is `/bootstrap`.** It's the interactive setup that personalizes the OS to you — collects your name, role, workspace paths, persona name, design brand, then writes that into the Configuration section of `CLAUDE.md`. Everything else assumes `/bootstrap` has been run.
 
@@ -235,7 +235,6 @@ You don't have to memorize slash commands. Claude reads your prompt and the desc
 | "make me a landing page for the launch" | `/design-saas-landing` |
 | "draft a deck about the AI strategy" | `/design-simple-deck` |
 | "build a dashboard mockup" | `/design-dashboard` |
-| "be a thinking partner — I'm stuck on X" | `/thinking-partner` |
 | "save this article for later" | `/save-resource` |
 | "process my inbox" | `/inbox-process` |
 | "how does X work in this OS?" | `/os-guide` |
@@ -377,11 +376,11 @@ Never write outputs at the workspace root.
 
 ## What's included
 
-**Skills (45 total).**
+**Skills (44 total).**
 
 | Category | Skills |
 |---|---|
-| Chief-of-staff (everyday workflows) | `archive-project`, `briefing`, `budget-tracker`, `contact`, `contact-log`, `desktop-organizer`, `find`, `inbox-process`, `new-project`, `os-guide`, `prune-projects`, `save-resource`, `sync-indexes`, `thinking-partner` |
+| Chief-of-staff (everyday workflows) | `archive-project`, `briefing`, `budget-tracker`, `contact`, `contact-log`, `desktop-organizer`, `find`, `inbox-process`, `new-project`, `os-guide`, `prune-projects`, `save-resource`, `sync-indexes` |
 | Setup & meta | `bootstrap`, `skill-creator` |
 | ContinuousClaude V4.7 pipeline (9) | `autonomous`, `autonomous-research`, `bootup`, `create-handoff`, `premortem`, `research`, `resume-handoff`, `review`, `upgrade-harness` |
 | Research | `company-research`, `people-research` |
@@ -442,7 +441,6 @@ Plain Claude Code primitives:
 | Write a morning briefing | `/briefing` |
 | Process the inbox | `/inbox-process` |
 | Save something for later | `/save-resource` |
-| Think through a problem first | `/thinking-partner` |
 | Swap the active design brand | `/use-design <brand>` |
 | Add a recurring task | `CronCreate` or `/schedule` |
 | Reconfigure identity / persona | `/bootstrap` (delete `setup_completed:` line in CLAUDE.md first) |

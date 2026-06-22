@@ -450,7 +450,7 @@ Active design: <brand> — swap anytime with /use-design <brand>
   git add SOUL.md IDENTITY.md USER.md README.md TOOLS.md CLAUDE.md DESIGN.md memory/<YYYY-MM-DD>.md memory/writing-style.md <workspace.root>/
   git commit -m "fork bootstrap: configure as <user.name> / <assistant.name> / <brand>"
 
-For Day 2+ natural rhythms (the /find, /contact-log, /thinking-partner, /prune-projects loop), see:
+For Day 2+ natural rhythms (the /find, /contact-log, /prune-projects loop), see:
   <workspace.root>/4-Resources/onboarding/day-2-plus.md
 
 To re-run /bootstrap later: delete the `setup_completed: <date>` line in CLAUDE.md,

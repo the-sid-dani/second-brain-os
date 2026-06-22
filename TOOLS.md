@@ -56,7 +56,7 @@ If these are missing, install.sh wasn't run. `/research` and `/autonomous` won't
 The full inventory is visible at session start in the available-skills list. Bundle map:
 
 - **`design-*`** (14 workhorse skills) — HTML/visual artifacts. Brand tokens from root `DESIGN.md`; library at `<workspace.root>/<workspace.resources>/design-systems/` (72 brand presets). Swap brand: `/use-design <brand>`.
-- **`<assistant.name>`-internal** (15) — project lifecycle (`new-project`, `archive-project`, `prune-projects`, `inbox-process`, `save-resource`, `find`, `thinking-partner`, `contact`, `contact-log`, `briefing`, `bootstrap`, `sync-indexes`, `budget-tracker`, `desktop-organizer`, `skill-creator`).
+- **`<assistant.name>`-internal** (14) — project lifecycle (`new-project`, `archive-project`, `prune-projects`, `inbox-process`, `save-resource`, `find`, `contact`, `contact-log`, `briefing`, `bootstrap`, `sync-indexes`, `budget-tracker`, `desktop-organizer`, `skill-creator`).
 - **Atlassian** (3) — `confluence-publish-markdown`, `jira-decompose-epic`, `scaffold-engineering-project`. Require Atlassian MCP OAuth.
 - **Research** (2) — `company-research`, `people-research`. Require Exa MCP.
 - **Reference** — `samba-publish` ships with an adapt-before-fork disclaimer.

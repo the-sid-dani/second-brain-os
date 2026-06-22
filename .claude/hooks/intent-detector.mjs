@@ -105,10 +105,6 @@ const main = async () => {
     { name: "inbox-process-explicit",   regex: /^\/?inbox[- ]process\b/i,                                              suggest: "/inbox-process" },
     { name: "whats-in-my-inbox",        regex: /\bwhat[''']?s in (the |my )?inbox\b/i,                                  suggest: "/inbox-process" },
 
-    // /thinking-partner triggers — exploration mode
-    { name: "thinking-partner-explicit", regex: /\b(be (a |my )?thinking partner|thinking partner mode|sounding board)\b/i, suggest: "/thinking-partner" },
-    { name: "lets-think-through",       regex: /\blet[''']?s (think through|noodle on|explore|talk through|work through)\b/i, suggest: "/thinking-partner" },
-    { name: "help-me-explore",          regex: /\bhelp me (explore|think about|work through|noodle on)\b/i,            suggest: "/thinking-partner" },
 
     // /sync-indexes triggers — code-repo bookkeeping audit
     { name: "sync-indexes-explicit",    regex: /\b(sync indexes|sync code projects|audit code repos)\b/i,              suggest: "/sync-indexes" },

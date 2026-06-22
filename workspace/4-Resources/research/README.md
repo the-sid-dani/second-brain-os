@@ -39,7 +39,6 @@ The date prefix is **when you wrote the research**, not when the content was tru
 
 - **`/find <topic>`** — searches across `research/` filenames + content; the most common reason to use `/find` is "what have I researched on X?"
 - **`/save-resource`** — when `<user.name>` says "save this as a research note on X," routes here with the right naming convention
-- **`/thinking-partner`** — when exploring a problem, may surface relevant past research via `/find` as part of clarifying questions
 - **`/new-project`** Step 0 — searches research for related work before scaffolding; "you already researched X" → suggests reviving research rather than starting fresh
 
 ## Folder vs file
