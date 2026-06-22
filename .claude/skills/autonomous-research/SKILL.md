@@ -1,6 +1,7 @@
 ---
 name: autonomous-research
-description: Looping research pipeline — hypotheses deepen via Ouros sessions, artifacts flow back
+description: >-
+  Deep, iterative, hypothesis-driven research that loops until confident — not a single-pass lookup. Builds on /research by spawning multiple hypothesis workers per iteration, accumulating evidence in Ouros sessions, looping until confident or the user stops. Use when the user says 'research this deeply across multiple passes', 'run iterative research on', 'hypothesis-driven investigation of', 'loop until you understand X', 'deep-dive with synthesis'. NOT for single-session exploration (use /research) or implementation (use /autonomous).
 user-invocable: true
 ---
 
@@ -195,7 +196,7 @@ SYNTHESIZE FINAL:
     <state_root>/continuum/research/{topic}/findings.md — telegraphic artifact
   Structure: question, findings per hypothesis, confidence, open questions, sources.
   This is what /autonomous consumes, handoffs reference, user reads.
-  Persist: research_contract.json has full state for /resume_handoff.
+  Persist: research_contract.json has full state for /resume-handoff.
 
 
 STATE

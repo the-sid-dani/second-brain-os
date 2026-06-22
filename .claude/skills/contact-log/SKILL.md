@@ -1,7 +1,8 @@
 ---
 name: contact-log
-description: Write-mode skill — append a new interaction entry to a matched contact's `## Interaction log` section in `<workspace.root>/<workspace.resources>/contacts/<slug>.md` and auto-bump the `last_interaction` frontmatter to today's date. Append-only via Edit (never Write — preserves prior entries + About / Recurring topics / Open commitments sections). Reuses `/contact`'s fuzzy-match priority order. Use when <user.name> wants to record an interaction — phrases like "/contact-log <name>", "log my meeting with X", "just talked to <name>", "record my call with X". Mutation, single-source, and no-fabrication invariants live in SKILL.md body.
+description: Write-mode skill — append a new interaction entry to a matched contact's `## Interaction log` section in `<workspace.root>/<workspace.resources>/contacts/<slug>.md` and auto-bump the `last_interaction` frontmatter to today's date. Append-only via Edit (never Write — preserves prior entries + About / Recurring topics / Open commitments sections). Entry text wikilinks other known contacts/topics per the back-linking iron law (Step 4); materially-involved other contacts get a suggest-only propagation offer. Reuses `/contact`'s fuzzy-match priority order. Use when <user.name> wants to record an interaction — phrases like "/contact-log <name>", "log my meeting with X", "just talked to <name>", "record my call with X". Mutation, single-source, and no-fabrication invariants live in SKILL.md body.
 allowed-tools: Read Edit Bash AskUserQuestion Skill
+disable-model-invocation: true
 ---
 
 # contact-log
@@ -147,6 +148,16 @@ Example normal entry:
 
 The format mirrors `<workspace.root>/<workspace.resources>/contacts/README.md`'s schema example. Use bullets, not prose paragraphs — `/contact` parses bullets when surfacing recent interactions.
 
+**Back-linking iron law.** Before finalizing the entry text, scan the body for mentions of OTHER entities and wikilink them in place:
+
+- Another person who has a contact file (`ls <workspace.root>/<workspace.resources>/contacts/` to check) → write their mention as `[[contacts/<their-slug>]]`.
+- A project or durable topic that exists in the workspace → `[[<topic-slug>]]` per the WikiLinks convention (decision #19).
+- A mentioned person with NO contact file → leave the name as plain text. Do NOT scaffold a file for them (that's `/contact-add`), do NOT invent a wikilink target.
+
+This costs one `ls` and makes every interaction entry traceable from the other side — `/find` (both arms) follows these links, and any future graph layer feeds on them. An entry that names Omar without `[[contacts/omar-zennadi]]` is a broken edge.
+
+**Entity-propagation check (suggest-only).** If the body materially involves another contact (they made a commitment, a decision affects them — not a passing mention), note it for Step 6: after the append succeeds, OFFER to run `/contact-log <other-name>` for their file too. Never auto-write to a second contact file from this invocation — the Boundary stands; propagation happens via a second explicit invocation.
+
 ### Step 5: Insert via Edit (NOT Write) — two operations
 
 **Edit #1: Bump `last_interaction` frontmatter.**
@@ -188,6 +199,8 @@ Logged interaction with <name> at <workspace.root>/<workspace.resources>/contact
   last_interaction: bumped to <YYYY-MM-DD>
 ```
 
+If the entity-propagation check (Step 4) flagged another materially-involved contact, append ONE line to the report: *"<other-name> was materially involved — log to their file too? (/contact-log <other-name>)"*. Suggest-only; no second-file mutation from this invocation.
+
 Stop. Do not auto-update any index file (no INDEX exists for contacts). Do not auto-commit. Do not write to `memory/YYYY-MM-DD.md` (single-source rule). Do not propose unrelated next actions.
 
 ## Failure modes
@@ -204,6 +217,8 @@ Stop. Do not auto-update any index file (no INDEX exists for contacts). Do not a
 | File modified between Read and Edit | Concurrent edit, git pull, etc. | Edit's built-in safety catches this — surface the error and re-prompt the user to re-run. |
 | `AskUserQuestion` not available (subagent context) | Worker subagent runs lack the tool | Pre-extract topic + body from the invocation prompt if possible (e.g., `log my 1:1 with alex — discussed MCP, agreed on auth pattern`). If extraction fails, abort cleanly — do not invent. |
 | User invokes on a `status: personal` or `status: family` contact | Logging interaction with a friend | Works normally. No special handling. The status field doesn't gate `/contact-log`. |
+| Body mentions a person with no contact file | Not everyone is a contact | Leave name as plain text — no wikilink to a nonexistent target, no auto-scaffold. Suggest `/contact-add` only if they seem recurring. |
+| Back-link `ls` check skipped under time pressure | Lazy compose | Regression — the iron law is one `ls`; entries without `[[contacts/<slug>]]` links for known people are broken edges for /find and any graph layer. |
 | Configuration values missing | Fresh fork without `/bootstrap` run | Error: *"Configuration section in root CLAUDE.md not populated. Run `/bootstrap` (TBD) or fill it in manually first."* |
 
 ## Boundary

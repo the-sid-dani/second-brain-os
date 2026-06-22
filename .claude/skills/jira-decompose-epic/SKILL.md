@@ -1,6 +1,7 @@
 ---
 name: jira-decompose-epic
 description: Decompose a Jira Epic into N Story tickets in one batch — consistent shape per story (header info panel with Confluence + repo cross-links, ADF taskList for acceptance criteria, parent linkage, custom fields, Blocks links between sequential slices). Use whenever the user wants to break an Epic into vertical slices and bulk-create the corresponding Stories — phrases like "decompose this Epic into stories", "create the slices", "scaffold the stories under <Epic>", "spin up Slices A through G", "bulk-create these vertical slices in Jira". Reads from a YAML/JSON spec the user prepares — does not author the spec from conversation.
+disable-model-invocation: true
 ---
 
 # jira-decompose-epic

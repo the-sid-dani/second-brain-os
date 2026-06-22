@@ -1,6 +1,7 @@
 ---
 name: new-project
-description: Scaffolds a new project — either a meta-project (planning, strategy, content, research, meetings) at `<workspace.root>/<workspace.projects>/YYYY-MM-slug/` or a code repo at `<workspace.root>/<workspace.coding>/<name>/` with optional GitHub integration. Use whenever the user wants to start, kick off, scaffold, set up, or create a new project — phrases like "kick off X", "scaffold a project for Y", "set up the QBR prep", "new MCP server for Z", "spin up a repo for W", "create a TypeScript/Python/Rust project". Branches on project type; body has the full taxonomy and Configuration-token resolution.
+disable-model-invocation: true
+description: Scaffolds a new project — either a meta-project (planning, strategy, content, research, meetings) at `<workspace.root>/<workspace.projects>/YYYY-MM-slug/` or a code repo at `<workspace.root>/<workspace.coding>/<name>/` with optional GitHub integration. Use whenever the user wants to start, kick off, scaffold, set up, or create a new project — phrases like "kick off X", "scaffold a project for Y", "set up the QBR prep", "new MCP server for Z", "spin up a repo for W", "create a TypeScript/Python/Rust project". Branches on project type; body has the full taxonomy and Configuration-token resolution. NOT for wiring Confluence + Jira on an existing engineering project (use /scaffold-engineering-project).
 allowed-tools: Read Write Bash AskUserQuestion Skill
 ---
 
@@ -43,7 +44,7 @@ Run `/find <proposed-slug>` and `/find <topic-keywords>` across `<workspace.root
 ```
 Found existing work that may match:
   · 1-Projects/2026-01-ai-task-force-execution/  (active, last touched 2026-04-14)
-  · 4-Archive/2025-12-old-attempt/                (archived, last touched 2025-12-15)
+  · 5-Archive/2025-12-old-attempt/                (archived, last touched 2025-12-15)
 
 How do you want to proceed?
   [1] Continue in the active project (open <path>)
@@ -64,7 +65,7 @@ How do you want to proceed?
   [3] Cancel
 ```
 
-**The "capture to Inbox" branch (option [4] with-matches / [2] without-matches):** create `<workspace.root>/<workspace.inbox>/<slug>/` (or single `<slug>.md` file if the user is capturing a thought, not a folder of material) — NO `CLAUDE.md`, NO frontmatter, NO `memory.md`. Just the slug folder/file with whatever initial content the user has. Then stop. `/inbox-process` (Friday triage) will revisit and either promote to `1-Projects/`, file in `3-Resources/`, or archive. The signal that something belongs in Inbox vs Projects: **uncertainty about whether it's a project at all.** Half-formed ideas, exploratory captures, "I might want to look at this later," generated artifacts (decks/dashboards/reports) without a project owner — all Inbox. Things with a clear scope, deliverables, and commitment to follow through — those earn the `1-Projects/` scaffold.
+**The "capture to Inbox" branch (option [4] with-matches / [2] without-matches):** create `<workspace.root>/<workspace.inbox>/<slug>/` (or single `<slug>.md` file if the user is capturing a thought, not a folder of material) — NO `CLAUDE.md`, NO frontmatter, NO `memory.md`. Just the slug folder/file with whatever initial content the user has. Then stop. `/inbox-process` (Friday triage) will revisit and either promote to `1-Projects/`, file in `4-Resources/`, or archive. The signal that something belongs in Inbox vs Projects: **uncertainty about whether it's a project at all.** Half-formed ideas, exploratory captures, "I might want to look at this later," generated artifacts (decks/dashboards/reports) without a project owner — all Inbox. Things with a clear scope, deliverables, and commitment to follow through — those earn the `1-Projects/` scaffold.
 
 **Skip Step 0 only when the user explicitly says** *"yes, start a fresh project — I know <topic> exists / I'm sure this is project-scoped"* (already aware, deliberate). Otherwise the `/find` + capture-vs-commit precheck is mandatory. The cost is one /find call (cheap); the benefit is preventing two failure modes: (a) `<topic>-revival` / `<topic>-v2` siblings that fragment lineage, AND (b) the unmigrated-folder graveyard in `1-Projects/` (folders without CLAUDE.md that should have been Inbox captures).
 
@@ -185,7 +186,7 @@ Read both with the `Read` tool.
 
 **HQ linkage (added 2026-05-20):**
 
-Before writing the frontmatter, detect existing HQs by scanning `hq-*/` at repo root. If at least one HQ exists, ask via `AskUserQuestion`:
+Before writing the frontmatter, detect existing HQs by scanning `<workspace.root>/<workspace.areas>/*/` (i.e. `workspace/2-Areas/*/`). If at least one HQ exists, ask via `AskUserQuestion`:
 
 > *"Which HQ does this project belong under?"*
 

@@ -1,5 +1,5 @@
 ---
-description: Swap the active design system at workspace root. Copies a brand from workspace/3-Resources/design-systems/<brand>/DESIGN.md to ./DESIGN.md so all design:* skills pick up the new tokens.
+description: Swap the active design system at workspace root. Copies a brand from workspace/4-Resources/design-systems/<brand>/DESIGN.md to ./DESIGN.md so all design:* skills pick up the new tokens.
 argument-hint: <brand>
 allowed-tools: Bash(ls:*), Bash(cp:*), Bash(test:*), Bash(stat:*), Bash(diff:*), Read
 ---
@@ -8,7 +8,7 @@ allowed-tools: Bash(ls:*), Bash(cp:*), Bash(test:*), Bash(stat:*), Bash(diff:*),
 
 The user wants to swap the workspace's active design system to: `$ARGUMENTS`
 
-Library: `workspace/3-Resources/design-systems/`
+Library: `workspace/4-Resources/design-systems/`
 Active selection: `./DESIGN.md` (workspace root)
 Per-project override: `workspace/1-Projects/<slug>/DESIGN.md` takes precedence over root for that project
 
@@ -24,12 +24,12 @@ Check `$ARGUMENTS`:
 
 ### Step 2 — Resolve the brand
 
-Run: `test -f "workspace/3-Resources/design-systems/$ARGUMENTS/DESIGN.md" && echo FOUND || echo MISSING`
+Run: `test -f "workspace/4-Resources/design-systems/$ARGUMENTS/DESIGN.md" && echo FOUND || echo MISSING`
 
 - **If FOUND:** continue to Step 3.
 - **If MISSING (or `$ARGUMENTS` was empty):** list available brands and ask the user to pick.
   ```
-  Run: ls workspace/3-Resources/design-systems/ | grep -v '^README' | sort
+  Run: ls workspace/4-Resources/design-systems/ | grep -v '^README' | sort
   ```
   Show the list (72 brands). Tell the user: "Brand `$ARGUMENTS` not found. Pick one from the list above and re-run `/use-design <brand>`." Then stop. Do NOT proceed to copy.
 
@@ -46,7 +46,7 @@ Read the first 3 lines of the current `DESIGN.md` (if it exists) to extract the 
 
 ### Step 5 — Copy the new brand into place
 
-Run: `cp "workspace/3-Resources/design-systems/$ARGUMENTS/DESIGN.md" DESIGN.md`
+Run: `cp "workspace/4-Resources/design-systems/$ARGUMENTS/DESIGN.md" DESIGN.md`
 
 Then read the first 3 lines of the new `DESIGN.md` to extract the new brand title. Save as `NEW_BRAND`.
 
@@ -57,7 +57,7 @@ Print to the user:
 ✅ Active design system swapped.
 
   Was: <PREVIOUS_BRAND>
-  Now: <NEW_BRAND>  (from workspace/3-Resources/design-systems/$ARGUMENTS/)
+  Now: <NEW_BRAND>  (from workspace/4-Resources/design-systems/$ARGUMENTS/)
 
 Backup at .DESIGN.md.previous (run `cp .DESIGN.md.previous DESIGN.md` to undo).
 

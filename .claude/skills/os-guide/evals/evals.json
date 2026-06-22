@@ -5,7 +5,7 @@
       "id": "trigger-positive-para-in-this-os",
       "name": "what-is-para-in-this-os-narrative-mode",
       "prompt": "what is PARA in this OS?",
-      "expected_output": "Skill triggers. Reads README.md §'What is PARA in this OS?' (or §'Project Map') + locked decision #1 in system-design.md §7 + Configuration tokens from CLAUDE.md. Answers with the 5-folder workspace layout (0-Inbox/, 1-Projects/, 2-Coding/, 3-Resources/, 4-Archive/), explicitly distinguishes from USER.md's 6-folder Mac Desktop PARA, rejects generic Tiago-Forte theory with a one-line redirect. Every factual claim has *(source: path:line)* citation. Narrative mode (no structured key:value:source block).",
+      "expected_output": "Skill triggers. Reads README.md §'What is PARA in this OS?' (or §'Project Map') + locked decision #1 in system-design.md §7 + Configuration tokens from CLAUDE.md. Answers with the 5-folder workspace layout (0-Inbox/, 1-Projects/, 3-Coding/, 4-Resources/, 5-Archive/), explicitly distinguishes from USER.md's 6-folder Mac Desktop PARA, rejects generic Tiago-Forte theory with a one-line redirect. Every factual claim has *(source: path:line)* citation. Narrative mode (no structured key:value:source block).",
       "files": [],
       "preconditions": [
         "README.md exists with §'What is PARA in this OS?' section (added 2026-05-17 in Pass 2h item 15r).",
@@ -13,7 +13,7 @@
         "CLAUDE.md Configuration section is filled in (setup_completed present)."
       ],
       "assertions": [
-        {"text": "Output names exactly five workspace folders (0-Inbox, 1-Projects, 2-Coding, 3-Resources, 4-Archive)", "weight": 1, "critical": true},
+        {"text": "Output names exactly five workspace folders (0-Inbox, 1-Projects, 3-Coding, 4-Resources, 5-Archive)", "weight": 1, "critical": true},
         {"text": "Output cites README.md and/or system-design.md with *(source: path:line)* format", "weight": 1, "critical": true},
         {"text": "Output explicitly notes Mac Desktop PARA is a separate system (6-folder)", "weight": 1, "critical": false},
         {"text": "Output does NOT lecture on generic Tiago-Forte PARA theory beyond a one-line redirect", "weight": 1, "critical": true},
@@ -65,7 +65,7 @@
         {"text": "Output identifies decision #21 explicitly", "weight": 1, "critical": true},
         {"text": "Output names the canonical location <workspace.resources>/contacts/<slug>.md (or token-resolved)", "weight": 1, "critical": true},
         {"text": "Output cites system-design.md with line number", "weight": 1, "critical": true},
-        {"text": "Output explains that contacts/ is in 3-Resources (Reference material) NOT memory/", "weight": 1, "critical": false}
+        {"text": "Output explains that contacts/ is in 4-Resources (Reference material) NOT memory/", "weight": 1, "critical": false}
       ]
     },
     {

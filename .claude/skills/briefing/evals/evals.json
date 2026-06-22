@@ -8,7 +8,7 @@
       "expected_output": "Skill triggers. Composes 6 sources (Gmail+Calendar+Slack+Jira+Contacts+GitHub PRs). Writes a markdown file to docs/briefings/morning-briefing-YYYY-MM-DD.md (today's date). All required H2 sections present in correct order. Output filtered to exclude status:personal contacts. Closing line 'That's the lay of the land. Where do you want to start?' present. Surfaces top-3 to user inline (not full dump).",
       "files": [],
       "preconditions": [
-        "21 contact files exist at beru-workspace/3-Resources/contacts/ including faizan.md (status: personal)",
+        "21 contact files exist at beru-workspace/4-Resources/contacts/ including faizan.md (status: personal)",
         "All 5 MCPs in .mcp.json (gemini-vision, exa, slack, atlassian, figma)",
         "GWS CLI authenticated, GitHub CLI authenticated as the-sid-dani",
         "Output directory docs/briefings/ exists (created during workflow-defect cleanup)"
@@ -90,7 +90,7 @@
       "expected_output": "T2 INVARIANT TEST. faizan.md has status:personal — must be filtered at READ time in Step 5. Output 'Open commitments by person' section must not contain Faizan, even if his contact file has open commitments. Filter is at read time, not display time, to prevent context leakage via summarization.",
       "files": [],
       "preconditions": [
-        "beru-workspace/3-Resources/contacts/faizan.md exists with status: personal"
+        "beru-workspace/4-Resources/contacts/faizan.md exists with status: personal"
       ],
       "assertions": [
         {"text": "Output (full file content) does NOT contain the string 'faizan' (case-insensitive)", "weight": 2, "critical": true},

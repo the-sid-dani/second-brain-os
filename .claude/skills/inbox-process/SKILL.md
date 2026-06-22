@@ -1,6 +1,8 @@
 ---
 name: inbox-process
-description: Friday-batch triage of `<workspace.root>/<workspace.inbox>/` AND of unmigrated `<workspace.root>/<workspace.projects>/*/` folders (missing CLAUDE.md). Iterates each candidate, shows preview, asks disposition via `AskUserQuestion`: promote (→ `/save-resource`), project (→ `/new-project`), scaffold-in-place, move-to-coding, move-to-inbox, archive, delete, or keep. Sister skill to `/prune-projects`. Use when the user wants to clean up Inbox or surface unmigrated debris — phrases like "process inbox", "Friday inbox review", "triage inbox", "what's unmigrated?". Trigger broadly on clean-up / triage language.
+disable-model-invocation: true
+description: >-
+  Friday-batch triage of `<workspace.root>/<workspace.inbox>/` AND of unmigrated `<workspace.root>/<workspace.projects>/*/` folders (missing CLAUDE.md). Iterates each candidate, shows preview, asks disposition via `AskUserQuestion`: promote (→ `/save-resource`), project (→ `/new-project`), scaffold-in-place, move-to-coding, move-to-inbox, archive, delete, or keep. Sister skill to `/prune-projects`. Use when the user wants to clean up Inbox or surface unmigrated debris — phrases like "process inbox", "Friday inbox review", "triage inbox", "what's unmigrated?". Trigger broadly on clean-up / triage language.
 allowed-tools: Read Write Bash AskUserQuestion Skill
 ---
 
@@ -227,7 +229,7 @@ Inbox dispositions:
 
 1-Projects/ unmigrated dispositions:
   Scaffolded in place:    A   (CLAUDE.md + memory.md added at existing path)
-  Moved to 2-Coding/:     B   (with index row appended)
+  Moved to 3-Coding/:     B   (with index row appended)
   Demoted to Inbox:       C   (will re-triage next pass)
   Promoted to Resources:  D
   Archived:               E

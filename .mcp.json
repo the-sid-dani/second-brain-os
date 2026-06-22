@@ -9,28 +9,23 @@
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?tools=web_search_advanced_exa"
     },
-    "slack": {
+    "firecrawl": {
       "type": "http",
-      "url": "https://mcp.slack.com/mcp",
-      "oauth": {
-        "clientId": "1601185624273.8899143856786"
-      },
-      "callbackPort": 3118
-    },
-    "atlassian": {
-      "type": "http",
-      "url": "https://mcp.atlassian.com/v1/mcp"
-    },
-    "figma": {
-      "type": "http",
-      "url": "https://mcp.figma.com/mcp"
+      "url": "https://mcp.firecrawl.dev/v2/mcp",
+      "headers": {
+        "Authorization": "Bearer ${FIRECRAWL_API_KEY}"
+      }
     }
   },
   "_notes": {
+    "default_universals": "Ships 3 universal MCPs: gemini-vision (local image/PDF/video), exa (web search), firecrawl (web scrape/crawl). With their env keys set, first `claude` launch shows zero red MCP errors. Slack / Atlassian / Figma are OPT-IN — see opt_in_* below.",
     "gemini_vision_env": "Requires GEMINI_API_KEY exported in your shell. Free tier 15 req/min. Get a key at https://aistudio.google.com/apikey and add `export GEMINI_API_KEY=...` to your shell rc.",
     "exa_endpoint": "Uses the advanced endpoint. Only `web_search_advanced_exa` is recommended (per project decision). Auth via Exa's HTTP transport.",
-    "slack_oauth": "Slack's MCP does NOT support RFC 7591 dynamic client registration, so a pre-registered clientId is required. The clientId above is Anthropic's public Slack app (published in anthropics/claude-plugins-official). Fork users do NOT need to register their own Slack app — just run `/mcp` → Authenticate, then a Slack workspace admin approves the app once. If you prefer to register your own app, replace clientId at https://api.slack.com/apps.",
-    "http_mcps": "atlassian / figma / exa support standard browser-OAuth via /mcp Authenticate (no clientId needed). Slack requires the pre-registered clientId above. Run /mcp after install and authorize each.",
+    "firecrawl_endpoint": "Official remote Firecrawl MCP. Requires FIRECRAWL_API_KEY exported in your shell — get one at https://firecrawl.dev. Without the key, the MCP loads but every tool call returns 401; run `claude` → `/mcp` to authenticate or set the env var first.",
+    "opt_in_mcps": "Slack, Atlassian (Jira+Confluence), and Figma are NOT shipped in the default .mcp.json — they're added interactively during `/bootstrap` Step 2.5 if the fork user picks them. Canonical entries (for hand-add or bootstrap re-add) follow:",
+    "opt_in_slack": "{ \"type\": \"http\", \"url\": \"https://mcp.slack.com/mcp\", \"oauth\": { \"clientId\": \"1601185624273.8899143856786\", \"callbackPort\": 3118 } }  — Slack's MCP does NOT support RFC 7591 dynamic client registration, so a pre-registered clientId is required. The clientId is Anthropic's public Slack app (published in anthropics/claude-plugins-official); fork users do NOT register their own — just run `/mcp` → Authenticate, then a Slack workspace admin approves the app once. To use your own app, replace clientId at https://api.slack.com/apps.",
+    "opt_in_atlassian": "{ \"type\": \"http\", \"url\": \"https://mcp.atlassian.com/v1/mcp\" }  — Standard browser-OAuth on first `/mcp` Authenticate (no clientId needed).",
+    "opt_in_figma": "{ \"type\": \"http\", \"url\": \"https://mcp.figma.com/mcp\" }  — Standard browser-OAuth on first `/mcp` Authenticate (no clientId needed).",
     "fork_note": "This .mcp.json was sanitized for public-fork use — no tokens, no maintainer-specific history. Adjust freely for your own setup."
   }
 }

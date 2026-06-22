@@ -1,5 +1,6 @@
 ---
 name: desktop-organizer
+disable-model-invocation: true
 description: Sweep loose files off the Mac Desktop (and optionally ~/Downloads) into the right home inside <workspace.root>. Screenshots and images go to a Resources media folder; anything uncertain goes to the Inbox for later triage. Native Bash only, confirmation-gated, never deletes without asking. Use when <user.name> says "organize my desktop", "clean up my desktop", "mac cleanup", "clean up downloads", "sort my screenshots", "tidy the desktop", or any desktop/downloads file-sweep intent.
 ---
 
@@ -17,7 +18,7 @@ Routing model (locked with <user.name> 2026-05-29):
 ## Hard rules
 
 1. **Native Bash only.** Use `ls`, `find`, `file`, `mv` via the Bash tool. No "filesystem MCP" — it doesn't exist in this environment and was why the old version was broken.
-2. **Files only, never folders.** Top-level folders on the Desktop (`2-Coding`, `3-Resources`, the OS repo folder, etc.) are out of scope — only move loose files.
+2. **Files only, never folders.** Top-level folders on the Desktop (`3-Coding`, `4-Resources`, the OS repo folder, etc.) are out of scope — only move loose files.
 3. **Confirmation gate before any move.** Always show the full plan and get an explicit yes before running a single `mv`.
 4. **Never delete without asking.** Default disposition for junk/old archives is "move to Inbox", not delete. Deletion requires a separate explicit yes per the workspace destructive-ops boundary.
 5. **No overwrites.** If a destination file with the same name exists, rename the incoming file with a `-1`/`-2` suffix rather than clobbering.

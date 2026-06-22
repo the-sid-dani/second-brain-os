@@ -8,7 +8,7 @@
       "expected_output": "Lists matches from <workspace.resources>/research/2026-01-prediction-markets/ as the top hit, with file paths, breakdown line showing K resources / 0 projects, and either a synthesis (since it's a single topic folder) or an offer to read/synthesize.",
       "files": [],
       "assertions": [
-        {"text": "Output references the path beru-workspace/3-Resources/research/2026-01-prediction-markets/ at least once"},
+        {"text": "Output references the path beru-workspace/4-Resources/research/2026-01-prediction-markets/ at least once"},
         {"text": "Output includes a breakdown line counting matches per location (resources/projects/archive/memory)"},
         {"text": "Output does not contain hardcoded paths from other users (no '/Users/' absolute paths in user-facing output)"}
       ]

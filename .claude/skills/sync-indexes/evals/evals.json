@@ -14,7 +14,7 @@
       "assertions": [
         {"text": "Output identifies samba-onboarding as an ADD candidate", "weight": 1, "critical": true},
         {"text": "Output asks via AskUserQuestion before mutating the index file", "weight": 1, "critical": true},
-        {"text": "After approval, <indexes.code_projects> contains a row with the path beru-workspace/2-Coding/samba-onboarding (or equivalent token-resolved path)", "weight": 1, "critical": true},
+        {"text": "After approval, <indexes.code_projects> contains a row with the path beru-workspace/3-Coding/samba-onboarding (or equivalent token-resolved path)", "weight": 1, "critical": true},
         {"text": "GitHub field on the new row is the-sid-dani/samba-onboarding (detected via git remote)", "weight": 1, "critical": false},
         {"text": "Stack and Brief fields contain '(needs review)' literal — no fabricated values", "weight": 1, "critical": true}
       ]

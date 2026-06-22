@@ -1,6 +1,7 @@
 ---
 name: premortem
-description: Pre-implementation failure analysis — first-principles retrospective with tiger/elephant risk classification
+description: >-
+  Before starting any implementation, project failure states and classify risks via a first-principles retrospective — what assumptions could be wrong, what shortcuts become permanent, what is being avoided. Use when the user says 'what could go wrong with this plan', 'risk analysis before we build', 'premortem this spec', 'failure-mode analysis', 'what are we missing'. Outputs tiger (must mitigate) / paper-tiger (bounded) / elephant (avoided) classification with a BLOCK/WARN/PASS gate.
 user-invocable: true
 allowed-tools: [Read, Grep, Glob, Agent, AskUserQuestion]
 ---

@@ -2,6 +2,7 @@
 name: bootstrap
 description: Interactive first-run setup for a fresh fork of the second-brain-os — THE entry point every fork user runs once to configure identity, the assistant's persona (no default name — fork user always names their own assistant), the user's writing voice (sampled or described, saved to memory/writing-style.md), design system, workspace skeleton, TOOLS.md, and the Configuration token block in root CLAUDE.md. Walks through 6 narrated steps with AskUserQuestion gates, conversational explanations of WHY each step matters (not just WHAT), read-only environment probes (tier-aware via SBOS_TIER — CCv4 toolchain probes only fire on coding tier), live tool-detection panel (✅/⏳/⚪/⚠️/❌), persona-file regeneration from templates (preserves user edits via git-diff vs upstream), writing-voice analysis from sample or descriptive answers, TOOLS.md preview before write, and a smoke test through `/new-project` to verify placeholder substitution. Detects re-runs via `setup_completed:` in Configuration; refuses gracefully. Use after cloning the repo, or when reconfiguring identity / persona / workspace / voice — phrases like "/bootstrap", "I just cloned this", "first-time setup", "configure the assistant". Tiger invariants T1-T4 (never overwrite user-edited persona files, never re-run on configured fork, never auto-commit, never install tools) live in SKILL.md body.
 allowed-tools: Read Write Edit Bash AskUserQuestion Skill
+disable-model-invocation: true
 ---
 
 # bootstrap
@@ -127,7 +128,7 @@ For each MCP in `.mcp.json.mcpServers`: probe the deferred-tools list (session-s
 
 **Workspace + persona state probes:**
 ```bash
-for d in 0-Inbox 1-Projects 2-Coding 3-Resources 4-Archive; do
+for d in 0-Inbox 1-Projects 2-Areas 3-Coding 4-Resources 5-Archive; do
   test -d "workspace/$d" && echo "OK  $d" || echo "MISSING  $d"
 done
 for f in SOUL.md USER.md IDENTITY.md CLAUDE.md README.md TOOLS.md; do
@@ -302,7 +303,7 @@ Three sub-blocks; narrate before each.
 
 #### 5a: Persona file regeneration (T1 invariant — per-file git-diff guard)
 
-**Narrate:** *"Time to make your assistant real on disk. I'll take the templates at `<workspace.root>/3-Resources/templates/persona/` and substitute in everything you've told me — your name, your assistant's name, the vibe, the role, the pronoun — to regenerate `SOUL.md`, `IDENTITY.md`, `USER.md`, and `README.md` at the repo root. Before each overwrite I check `git diff HEAD -- <file>`; if you've hand-edited, I default to skipping."*
+**Narrate:** *"Time to make your assistant real on disk. I'll take the templates at `<workspace.root>/4-Resources/templates/persona/` and substitute in everything you've told me — your name, your assistant's name, the vibe, the role, the pronoun — to regenerate `SOUL.md`, `IDENTITY.md`, `USER.md`, and `README.md` at the repo root. Before each overwrite I check `git diff HEAD -- <file>`; if you've hand-edited, I default to skipping."*
 
 For each file in scope (or skip ALL if Step 4a (b) was chosen):
 
@@ -323,7 +324,7 @@ After all files processed: *"Persona files: wrote `<list>`, skipped `<list>`."*
 if [[ -d workspace && ! -d "${WORKSPACE_ROOT}" ]]; then
   mv workspace "${WORKSPACE_ROOT}"
 fi
-mkdir -p "${WORKSPACE_ROOT}"/{0-Inbox,1-Projects,2-Coding,3-Resources/{templates,research,reference,meetings,contacts,design-systems,onboarding},4-Archive}
+mkdir -p "${WORKSPACE_ROOT}"/{0-Inbox,1-Projects,2-Areas,3-Coding,4-Resources/{templates,research,reference,meetings,contacts,design-systems,onboarding},5-Archive}
 ```
 
 Surface which subdirs were newly created vs already existed.
@@ -398,7 +399,7 @@ Invoke `/new-project` (type: `design`, name: `bootstrap-smoke-test-<HHMMSS>`). V
 
 #### 6c: Closing summary — what to do in the next 10 minutes + files changed + commit cmd (T3)
 
-The closing message has two sections — keep it short. Day 2+ rhythms live in `<workspace.root>/3-Resources/onboarding/day-2-plus.md` (read at leisure).
+The closing message has two sections — keep it short. Day 2+ rhythms live in `<workspace.root>/4-Resources/onboarding/day-2-plus.md` (read at leisure).
 
 **Section A — What to do in the next 10 minutes:**
 
@@ -450,7 +451,7 @@ Active design: <brand> — swap anytime with /use-design <brand>
   git commit -m "fork bootstrap: configure as <user.name> / <assistant.name> / <brand>"
 
 For Day 2+ natural rhythms (the /find, /contact-log, /thinking-partner, /prune-projects loop), see:
-  <workspace.root>/3-Resources/onboarding/day-2-plus.md
+  <workspace.root>/4-Resources/onboarding/day-2-plus.md
 
 To re-run /bootstrap later: delete the `setup_completed: <date>` line in CLAUDE.md,
 then invoke /bootstrap again.
@@ -481,7 +482,7 @@ That's the lay of the land. Where do you want to start?
 - **NEVER install tools** (T4) — surface hints, don't run them.
 - **NEVER overwrite user-edited persona files without explicit confirmation** (T1) — default = skip.
 - **NEVER re-run on already-configured fork** without `setup_completed:` being deleted first (T2).
-- **NEVER alter `2-Coding/` repos.** Independent gits.
+- **NEVER alter `3-Coding/` repos.** Independent gits.
 - **NEVER write to `memory/`** other than today's daily log. Append-only.
 - **NEVER call Exa / WebSearch / WebFetch.** Bootstrap is local.
 - **NEVER fabricate detection results.** Every ✅/⏳/⚪/⚠️/❌ traces to a real Step 2 probe; when unsure, `ℹ️ unverified`.

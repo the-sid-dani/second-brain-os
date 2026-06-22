@@ -1,6 +1,6 @@
 ---
 name: find
-description: Recall layer for the second brain. Searches across `<workspace.root>/<workspace.resources>/`, `<workspace.projects>/`, `<workspace.archive>/`, `hq-*/` (HQ workstations + foundation), and `memory/` for a topic — by filename and content — then ranks matches and optionally synthesizes them with file citations. Use whenever the user asks <assistant.name> to recall existing knowledge before generating new content — phrases like "do I have anything on X", "what do I know about Y", "search my notes for Z", "find research on W", "is there a project for V", "/find <topic>". Trigger broadly on recall language even when the user doesn't say "find" explicitly.
+description: Recall layer for the second brain. Searches across `<workspace.root>/<workspace.resources>/`, `<workspace.projects>/`, `<workspace.archive>/`, `<workspace.areas>/` (HQ workstations, now PARA Areas), and `memory/` for a topic — by filename and content — then merges, ranks, and optionally synthesizes matches with file citations. Use whenever the user asks <assistant.name> to recall existing knowledge before generating new content — phrases like "do I have anything on X", "what do I know about Y", "search my notes for Z", "find research on W", "is there a project for V", "/find <topic>". Trigger broadly on recall language even when the user doesn't say "find" explicitly.
 allowed-tools: Read Bash AskUserQuestion
 ---
 
@@ -52,6 +52,10 @@ Keep the original-case query for content grep; build a slugified variant (lowerc
 
 ### Step 2: Search across locations (parallel)
 
+The lexical arm (2a) always runs; matches merge and rank in Step 3.
+
+#### Step 2a: Lexical arm (always runs)
+
 Run these searches in parallel via Bash. All paths come from the Configuration section.
 
 ```bash
@@ -59,7 +63,7 @@ Run these searches in parallel via Bash. All paths come from the Configuration s
 find "<workspace.root>/<workspace.resources>" \
      "<workspace.root>/<workspace.projects>" \
      "<workspace.root>/<workspace.archive>" \
-     hq-* \
+     "<workspace.root>/<workspace.areas>" \
      -type f \( -iname "*<query>*" -o -iname "*<slug>*" \) 2>/dev/null
 
 find memory -type f -iname "*<query>*" 2>/dev/null
@@ -72,14 +76,14 @@ if command -v rg >/dev/null 2>&1; then
     "<workspace.root>/<workspace.resources>" \
     "<workspace.root>/<workspace.projects>" \
     "<workspace.root>/<workspace.archive>" \
-    hq-* \
+    "<workspace.root>/<workspace.areas>" \
     memory 2>/dev/null
 else
   grep -r -l -i --include="*.md" "<query>" \
     "<workspace.root>/<workspace.resources>" \
     "<workspace.root>/<workspace.projects>" \
     "<workspace.root>/<workspace.archive>" \
-    hq-* \
+    "<workspace.root>/<workspace.areas>" \
     memory 2>/dev/null
 fi
 ```
@@ -102,6 +106,7 @@ For each unique file, compute a weight:
 | Path contains `memory/` | +1 |
 | Path contains `<workspace.archive>/` | -1 |
 
+
 Higher weight = more likely to be what the user wanted. Sort descending, cap displayed list at 15 (the rest are surfaced as a count: *"+ N more matches truncated"*).
 
 ### Step 4: Show ranked list
@@ -118,7 +123,7 @@ Breakdown: K resources · L projects · M archive · P memory
 
 The **excerpt** is the first line containing the query (case-insensitive content match), or the first non-empty line if filename-only match. Trim to ~80 chars.
 
-Use `<relative-path>` from the workspace root (e.g., `workspace/3-Resources/research/2026-04-anthropic-admin-research/findings.md`) so the user can copy and Read directly.
+Use `<relative-path>` from the workspace root (e.g., `workspace/4-Resources/research/2026-04-anthropic-admin-research/findings.md`) so the user can copy and Read directly.
 
 If breakdown shows zero in resources but matches in archive, **flag it**: *"Note: only archived matches — nothing live."*
 

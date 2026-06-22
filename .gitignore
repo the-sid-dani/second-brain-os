@@ -1,7 +1,7 @@
 node_modules/
 .DS_Store
 *.DS_Store
-workspace/2-Coding/
+workspace/3-Coding/
 .venv/
 __pycache__/
 *.pyc

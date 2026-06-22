@@ -381,6 +381,7 @@ class MarkdownToADF:
 
     def render_document(self, md_text: str) -> list[dict]:
         from mistletoe import Document
+        md_text = strip_frontmatter(md_text)
         doc = Document(md_text)
         out: list[dict] = []
         for child in doc.children:
@@ -391,6 +392,16 @@ class MarkdownToADF:
 # ============================================================================
 # Title extraction
 # ============================================================================
+
+def strip_frontmatter(md: str) -> str:
+    """Remove a leading YAML frontmatter block (--- ... ---) if present.
+
+    Without this, the frontmatter lines parse as block-level RawText/LineBreak
+    tokens and render on the page as "[unsupported block: RawText]" garbage.
+    """
+    m = re.match(r"^---\s*\n.*?\n---\s*\n", md, flags=re.DOTALL)
+    return md[m.end():] if m else md
+
 
 def extract_title_and_strip(md: str) -> tuple[str | None, str]:
     """If the markdown starts with `# Title\n`, extract it and return rest.

@@ -1,6 +1,7 @@
 ---
 name: create-handoff
-description: Create handoff document for transferring work to another session
+description: >-
+  At end of session, create a structured handoff document so the next Claude instance can continue without re-discovering context. Use when the user says 'I need to stop', 'create a handoff', 'wrap up and document', 'end-of-session notes', 'pass context to the next session', 'handoff doc', or '/create-handoff'. Writes a handoff YAML with mental model, decisions, findings, next steps, and an immediately-actionable next-session prompt.
 user-invocable: true
 ---
 

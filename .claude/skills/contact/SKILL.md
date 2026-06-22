@@ -1,6 +1,7 @@
 ---
 name: contact
-description: Read-only display of a contact's profile from `<workspace.root>/<workspace.resources>/contacts/<slug>.md` — fuzzy-matches a name, then surfaces frontmatter summary, last interaction, open commitments (To/From split), About blurb, and Recurring topics. Use when the user asks <assistant.name> to recall who a person is or what context exists with them — phrases like "/contact <name>", "who is X?", "what's my context with Y?", "tell me about <name>". PRECEDENCE: `/contact` wins when the query target matches a file in contacts/; `/find` handles topic-keyed recall (research subjects, project topics). Fuzzy-match priority order (locked) lives in SKILL.md body. Read-only — for mutation use `/contact-log` or `/contact-add` (planned).
+description: >-
+  Read-only display of a contact's profile from `<workspace.root>/<workspace.resources>/contacts/<slug>.md` — fuzzy-matches a name, then surfaces frontmatter summary, last interaction, open commitments (To/From split), About blurb, and Recurring topics. Use when the user asks <assistant.name> to recall who a person is or what context exists with them — phrases like "/contact <name>", "who is X?", "what's my context with Y?", "tell me about <name>". PRECEDENCE: `/contact` wins when the query target matches a file in contacts/; `/find` handles topic-keyed recall (research subjects, project topics). Fuzzy-match priority order (locked) lives in SKILL.md body. Read-only — for mutation use `/contact-log` or `/contact-add` (planned).
 allowed-tools: Read Bash AskUserQuestion
 ---
 
@@ -12,7 +13,7 @@ Entity-keyed recall for people. Fuzzy-match a name across `<workspace.root>/<wor
 
 ## Why this exists
 
-Without `/contact`, recall about a person is a manual ritual: `ls workspace/3-Resources/contacts/`, guess the slug, `cat` the file. For Layer 3 skills (`/briefing`, `/meeting-prep`) the lookup is even more painful — they have to fuzzy-match names every time.
+Without `/contact`, recall about a person is a manual ritual: `ls workspace/4-Resources/contacts/`, guess the slug, `cat` the file. For Layer 3 skills (`/briefing`, `/meeting-prep`) the lookup is even more painful — they have to fuzzy-match names every time.
 
 `/contact` is the entity-keyed recall primitive. It pairs with `/find` (topic-keyed). Together they cover both axes of "what do I know about X?" — where X is either a thing or a person.
 

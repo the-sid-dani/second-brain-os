@@ -1,6 +1,8 @@
 ---
 name: save-resource
-description: Saves content into `<workspace.root>/<workspace.resources>/<type>/...` with the right convention per type — research → `YYYY-MM-<topic>-research/`, reference flat, meetings → `YYYY-MM-DD-<topic>.md`. Use whenever the user wants to file something into Resources — phrases like "save this to research", "file this in reference", "this is a meeting note", "promote this to resources", "save the X file in inbox to <type>", "/save-resource". Handles three sources: file path in invocation, Inbox candidate, or chat content. Trigger broadly on save/file/promote language for reference material.
+disable-model-invocation: true
+description: >-
+  Saves content into `<workspace.root>/<workspace.resources>/<type>/...` with the right convention per type — research → `YYYY-MM-<topic>-research/`, reference flat, meetings → `YYYY-MM-DD-<topic>.md`. Use whenever the user wants to file something into Resources — phrases like "save this to research", "file this in reference", "this is a meeting note", "promote this to resources", "save the X file in inbox to <type>", "/save-resource". Handles three sources: file path in invocation, Inbox candidate, or chat content. Trigger broadly on save/file/promote language for reference material.
 allowed-tools: Read Write Bash AskUserQuestion
 ---
 

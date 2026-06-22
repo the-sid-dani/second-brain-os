@@ -8,14 +8,14 @@
       "expected_output": "Skill triggers, fuzzy-matches 'omar' to omar-zennadi.md (slug-stem-match tier 2 — slug-stem 'omar' equals query). Displays profile block with Name=Omar Zennadi, role/team/relationship from frontmatter, last_interaction surfaced, About paragraph trimmed, Recurring topics bullets, Open commitments counts, source path footer. Read-only — no mutation.",
       "files": [],
       "preconditions": [
-        "Real state on Sid's machine (2026-05-06): beru-workspace/3-Resources/contacts/omar-zennadi.md exists with frontmatter name=Omar Zennadi, legal_name=Michael Zennadi, role=SVP Engineering, team=AI Task Force."
+        "Real state on Sid's machine (2026-05-06): beru-workspace/4-Resources/contacts/omar-zennadi.md exists with frontmatter name=Omar Zennadi, legal_name=Michael Zennadi, role=SVP Engineering, team=AI Task Force."
       ],
       "assertions": [
         {"text": "Output identifies Omar Zennadi as the matched contact (name appears verbatim)", "weight": 1, "critical": true},
-        {"text": "Output references the source path beru-workspace/3-Resources/contacts/omar-zennadi.md (or token-resolved equivalent)", "weight": 1, "critical": true},
+        {"text": "Output references the source path beru-workspace/4-Resources/contacts/omar-zennadi.md (or token-resolved equivalent)", "weight": 1, "critical": true},
         {"text": "Output surfaces Omar's role and team (SVP Engineering, AI Task Force)", "weight": 1, "critical": false},
         {"text": "Output surfaces last_interaction value (or 'no logged interactions yet' if value is 'unknown')", "weight": 1, "critical": true},
-        {"text": "Output does NOT mutate any file under beru-workspace/3-Resources/contacts/ (read-only invariant)", "weight": 1, "critical": true}
+        {"text": "Output does NOT mutate any file under beru-workspace/4-Resources/contacts/ (read-only invariant)", "weight": 1, "critical": true}
       ]
     },
     {
@@ -42,7 +42,7 @@
       "preconditions": [],
       "assertions": [
         {"text": "/contact skill does NOT trigger for this prompt", "weight": 1, "critical": true},
-        {"text": "No file under beru-workspace/3-Resources/contacts/ is read or referenced", "weight": 1, "critical": false}
+        {"text": "No file under beru-workspace/4-Resources/contacts/ is read or referenced", "weight": 1, "critical": false}
       ]
     },
     {
@@ -120,7 +120,7 @@
       ],
       "assertions": [
         {"text": "Output matches Bob van Toorn (single profile rendered)", "weight": 1, "critical": true},
-        {"text": "Output references the source path beru-workspace/3-Resources/contacts/bob-van-toorn.md (or token-resolved equivalent)", "weight": 1, "critical": false},
+        {"text": "Output references the source path beru-workspace/4-Resources/contacts/bob-van-toorn.md (or token-resolved equivalent)", "weight": 1, "critical": false},
         {"text": "Output does NOT prompt for disambiguation — slug-stem-match produces one unique hit", "weight": 1, "critical": false}
       ]
     },
@@ -154,7 +154,7 @@
         {"text": "AskUserQuestion is invoked with EXACTLY 2 options: Alvir Navin and Alyson Sprague (no additional candidates)", "weight": 1, "critical": true},
         {"text": "Each option label includes name + role + relationship (or name + role + team + relationship per SKILL.md Step 6 line 130) — not bare names", "weight": 1, "critical": true},
         {"text": "Skill does NOT silently pick one match — it stops and waits for user selection", "weight": 1, "critical": true},
-        {"text": "No file under beru-workspace/3-Resources/contacts/ is mutated (read-only)", "weight": 1, "critical": false}
+        {"text": "No file under beru-workspace/4-Resources/contacts/ is mutated (read-only)", "weight": 1, "critical": false}
       ]
     },
     {
@@ -183,7 +183,7 @@
         {"text": "Skill recognizes empty / whitespace-only query and asks the user for a name (plain-chat clarification per Step 1 line 55, or the failure-mode re-prompt per line 184)", "weight": 1, "critical": true},
         {"text": "Skill does NOT attempt fuzzy-match on empty input (no tier evaluation against empty string)", "weight": 1, "critical": true},
         {"text": "Skill does NOT open or display any contact file (no profile rendered, no candidate list)", "weight": 1, "critical": true},
-        {"text": "Skill does NOT mutate any file under beru-workspace/3-Resources/contacts/ (read-only invariant holds even on empty input)", "weight": 1, "critical": true}
+        {"text": "Skill does NOT mutate any file under beru-workspace/4-Resources/contacts/ (read-only invariant holds even on empty input)", "weight": 1, "critical": true}
       ]
     },
     {
@@ -201,7 +201,7 @@
         {"text": "Skill does NOT attempt to invoke AskUserQuestion in a subagent context (would error)", "weight": 1, "critical": true},
         {"text": "Skill lists both candidates inline as text (Alvir Navin AND Alyson Sprague both named in output) and stops", "weight": 1, "critical": true},
         {"text": "Output instructs the caller to re-invoke with a more specific query (e.g., full slug or explicit name)", "weight": 1, "critical": false},
-        {"text": "No file under beru-workspace/3-Resources/contacts/ is mutated", "weight": 1, "critical": false}
+        {"text": "No file under beru-workspace/4-Resources/contacts/ is mutated", "weight": 1, "critical": false}
       ]
     }
   ]

@@ -1,6 +1,7 @@
 ---
 name: research
-description: Exploratory research via Ouros RLM — token-efficient reasoning with persistent REPL state
+description: >-
+  Explore, investigate, or reason through something you do not know the answer to yet — open-ended investigation where the destination is not clear. Unlike /autonomous (known goal, TDD), this is for unknowns. Use when the user says 'explore X', 'what do I need to know about Y', 'investigate why Z', 'research the best approach to W'. Runs Ouros REPL sessions for token-efficient exploration. NOT for iterative hypothesis loops (use /autonomous-research) or people/company lookups (use /people-research or /company-research).
 user-invocable: true
 ---
 

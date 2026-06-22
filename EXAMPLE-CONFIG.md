@@ -21,9 +21,10 @@ Their Configuration section would look like:
 - `workspace.root` = `workspace`
 - `workspace.inbox` = `0-Inbox`
 - `workspace.projects` = `1-Projects`
-- `workspace.coding` = `2-Coding`
-- `workspace.resources` = `3-Resources`
-- `workspace.archive` = `4-Archive`
+- `workspace.areas` = `2-Areas`
+- `workspace.coding` = `3-Coding`
+- `workspace.resources` = `4-Resources`
+- `workspace.archive` = `5-Archive`
 
 ### templates (under `<workspace.root>/<workspace.resources>/templates/`)
 - `templates.project_claude` = `project-claude-template.md`
@@ -63,7 +64,7 @@ Their Configuration section would look like:
 | Field | Used by | Example value |
 |-------|---------|---------------|
 | `workspace.root` | All skills resolve `<workspace.root>` to this when reading paths | `workspace` (default), `brain`, `<assistant>-workspace`, `vault` |
-| `workspace.inbox` / `projects` / `coding` / `resources` / `archive` | Skills resolve `<workspace.inbox>` etc. — almost never changed from defaults | `0-Inbox`, `1-Projects`, `2-Coding`, `3-Resources`, `4-Archive` |
+| `workspace.inbox` / `projects` / `areas` / `coding` / `resources` / `archive` | Skills resolve `<workspace.inbox>` etc. — almost never changed from defaults | `0-Inbox`, `1-Projects`, `2-Areas`, `3-Coding`, `4-Resources`, `5-Archive` |
 | `templates.persona` | `/bootstrap` reads from this folder for SOUL/USER/IDENTITY templates | `persona/` (default; lives at `<workspace.root>/<workspace.resources>/templates/persona/`) |
 | `indexes.code_projects` | `/new-project` (code-repo branch) appends rows here; `/sync-indexes` audits drift | `<workspace.root>/<workspace.resources>/code-projects.md` |
 | `scripts.project_query` | `/briefing`, `/prune-projects`, root CLAUDE.md docs reference this for live project list | `<workspace.root>/<workspace.resources>/templates/project-query.sh` |
@@ -88,8 +89,8 @@ If you prefer to manually configure (skipping the smoke test, persona regenerati
 
 1. Edit the Configuration section in `CLAUDE.md` with your values
 2. Edit `SOUL.md`, `USER.md`, `IDENTITY.md`, `README.md`, `TOOLS.md` directly to fill in your `<assistant.name>` and `<user.name>` everywhere
-3. Create the workspace folder skeleton via `mkdir -p <workspace.root>/{0-Inbox,1-Projects,2-Coding,3-Resources/{templates,research,reference,meetings,contacts,design-systems,onboarding},4-Archive}` (2-Coding is flat — one folder per repo, no work/personal/forks/archive sub-tree)
-4. Copy templates to make them available: `cp -r workspace/3-Resources/templates/persona <workspace.root>/3-Resources/templates/`
+3. Create the workspace folder skeleton via `mkdir -p <workspace.root>/{0-Inbox,1-Projects,2-Areas,3-Coding,4-Resources/{templates,research,reference,meetings,contacts,design-systems,onboarding},5-Archive}` (2-Areas starts empty — HQ workstations grow into it; 3-Coding is flat — one folder per repo)
+4. Copy templates to make them available: `cp -r workspace/4-Resources/templates/persona <workspace.root>/4-Resources/templates/`
 
 The skills will work either way — they only depend on the Configuration section being filled in correctly.
 

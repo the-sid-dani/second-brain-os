@@ -20,15 +20,15 @@ This implements the "Capture before commit" operating principle in `SOUL.md`. Th
 ## What doesn't belong here
 
 - ✗ Active project work → `1-Projects/<slug>/` (with proper scaffold)
-- ✗ Reference docs you'll re-read → `3-Resources/reference/`
-- ✗ Research notes with a clear topic → `3-Resources/research/`
-- ✗ Meeting transcripts → `3-Resources/meetings/`
-- ✗ Code repos → `2-Coding/<scope>/<name>/`
-- ✗ Anything finished → `4-Archive/`
+- ✗ Reference docs you'll re-read → `4-Resources/reference/`
+- ✗ Research notes with a clear topic → `4-Resources/research/`
+- ✗ Meeting transcripts → `4-Resources/meetings/`
+- ✗ Code repos → `3-Coding/<scope>/<name>/`
+- ✗ Anything finished → `5-Archive/`
 
 ## How `<assistant.name>` uses this folder
 
-- **`/inbox-process`** — Friday triage routine. Walks each item, asks "promote to 1-Projects, file in 3-Resources, archive, or delete?" Empties the Inbox on a weekly cadence.
+- **`/inbox-process`** — Friday triage routine. Walks each item, asks "promote to 1-Projects, file in 4-Resources, archive, or delete?" Empties the Inbox on a weekly cadence.
 - **`/new-project`** Step 0 — if `<user.name>` asks to start a project but the topic is vague or exploratory, `/new-project` may suggest capturing to Inbox first rather than scaffolding prematurely.
 - **`/find <topic>`** — checks Inbox as part of its search scope. If you captured something here weeks ago about a topic you're now returning to, `/find` surfaces it.
 
@@ -60,7 +60,7 @@ Examples:
 
 - **Don't over-think the filename.** `random-thought-about-x.md` is fine. You'll rename or move it during triage.
 - **Inbox is NOT a long-term archive.** If something has been sitting here for 30+ days untriaged, it's probably not actually important. `/inbox-process` will surface this.
-- **If you find yourself adding structure** (frontmatter, sub-folders, careful filenames), the item is mature enough to be a `1-Projects/` scaffold or `3-Resources/` reference. Promote it now, don't keep polishing it in Inbox.
+- **If you find yourself adding structure** (frontmatter, sub-folders, careful filenames), the item is mature enough to be a `1-Projects/` scaffold or `4-Resources/` reference. Promote it now, don't keep polishing it in Inbox.
 
 ## Boundary
 

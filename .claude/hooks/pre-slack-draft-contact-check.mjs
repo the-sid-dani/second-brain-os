@@ -12,13 +12,13 @@
 //     "U05ABCDE1234": "alex-chen",
 //     "U05ABCDE5678": "priya-patel"
 //   }
-// Each slug must match a file at <workspace.root>/3-Resources/contacts/<slug>.md.
+// Each slug must match a file at <workspace.root>/4-Resources/contacts/<slug>.md.
 // If either the map or a contact file is missing, the hook exits silently —
 // the Slack tool call proceeds normally without context injection.
 //
 // Behavior: non-blocking warning. Hook reads stdin (Claude Code PreToolUse
 // JSON), checks tool_name + channel_id, looks up in .claude/.slack-id-map.json,
-// reads matching contact file from <workspace.root>/3-Resources/contacts/<slug>.md,
+// reads matching contact file from <workspace.root>/4-Resources/contacts/<slug>.md,
 // emits frontmatter + first ~40 lines of body to stderr. Exit 0.
 //
 // Stderr from a PreToolUse hook is fed back to the model as additional context,
@@ -64,12 +64,12 @@ try {
 const slug = map[channelId];
 if (!slug || slug.startsWith("_")) process.exit(0);
 
-// Auto-discover workspace root by globbing for */3-Resources/contacts/ at project root.
+// Auto-discover workspace root by globbing for */4-Resources/contacts/ at project root.
 // Works for any workspace name (workspace, brain, vault, etc.) — set by /bootstrap.
 let workspaceRoot = null;
 try {
   for (const entry of readdirSync(projectRoot, { withFileTypes: true })) {
-    if (entry.isDirectory() && existsSync(`${projectRoot}/${entry.name}/3-Resources/contacts`)) {
+    if (entry.isDirectory() && existsSync(`${projectRoot}/${entry.name}/4-Resources/contacts`)) {
       workspaceRoot = entry.name;
       break;
     }
@@ -79,7 +79,7 @@ try {
 }
 if (!workspaceRoot) process.exit(0);
 
-const contactPath = `${projectRoot}/${workspaceRoot}/3-Resources/contacts/${slug}.md`;
+const contactPath = `${projectRoot}/${workspaceRoot}/4-Resources/contacts/${slug}.md`;
 if (!existsSync(contactPath)) process.exit(0);
 
 const contact = readFileSync(contactPath, "utf8");
@@ -92,7 +92,7 @@ const warning = [
   `## ⚠️ Contact context for ${slug} (auto-loaded by pre-slack-draft-contact-check hook)`,
   "",
   "**Known recipient — you should have read this file BEFORE drafting.**",
-  `**Path:** ${workspaceRoot}/3-Resources/contacts/${slug}.md`,
+  `**Path:** ${workspaceRoot}/4-Resources/contacts/${slug}.md`,
   "",
   "**Contact summary:**",
   "",

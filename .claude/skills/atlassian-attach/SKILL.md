@@ -1,6 +1,7 @@
 ---
 name: atlassian-attach
 description: Upload files (screenshots, diagrams, PDFs, exported designs) as attachments to a Jira issue or a Confluence page. Works for either target — pick the subcommand. Uses Atlassian REST API directly via Python urllib + multipart — the official Atlassian MCP has no attachment-upload tools, so this skill exists to fill that hole. Auth via ATLASSIAN_BASIC_AUTH env var (classic API token only — scoped tokens cannot upload). Use whenever the user wants to add an image, screenshot, design export, or any binary file to an existing Jira ticket or Confluence page — phrases like "attach this screenshot to PROJ-450", "upload my-diagram.png to the design page", "add this PDF to the ticket", "embed this image in Confluence". Pairs naturally with `/confluence-publish-markdown` (which embeds external URLs only — no native upload) and with `/scaffold-engineering-project` (when slice descriptions need supporting images).
+disable-model-invocation: true
 ---
 
 # atlassian-attach

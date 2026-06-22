@@ -1,8 +1,10 @@
 ---
 name: upgrade-harness
-description: Extend the ouros sandbox with new external functions (bridge functions, security policy, tests)
+description: >-
+  Add a new external function (bridge function) to the Ouros sandbox harness — a new search provider, Slack integration, database query, or API call. The harness lives at .claude/tools/ouros_harness.py. Use when the user says 'add X to the sandbox', 'extend ouros with', 'new bridge function for', 'give the sandbox access to'. Walks through the async/sync wrapper, SECURITY_POLICY, EXTERNAL_FUNCTIONS registration, and smoke tests. NOT for upgrading the harness version.
 user-invocable: true
 allowed-tools: [Read, Edit, Write, Bash, Grep, Glob, AskUserQuestion]
+disable-model-invocation: true
 ---
 
 Walk through adding a new external function to the ouros sandbox harness. External functions are the sandbox's only way to interact with the outside world — each one pauses Python execution, runs the real operation on the host, and returns the result.

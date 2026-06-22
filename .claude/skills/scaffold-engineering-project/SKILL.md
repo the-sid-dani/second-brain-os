@@ -1,6 +1,7 @@
 ---
 name: scaffold-engineering-project
 description: One-command project scaffold combining Confluence + Jira. Given an existing Jira Epic and a repo with `system-design.md` (and optionally other markdown design docs), the skill publishes the markdown docs to Confluence as a hub-and-spokes structure, then bulk-creates the vertical-slice Stories under the Epic with full cross-links. Use this whenever <user.name> wants to scaffold a new engineering project end-to-end — phrases like "scaffold this engineering project", "set up Confluence + Jira for X", "land this design across both wikis", "boot the project tracking for X", "wire up Confluence and Jira for the new initiative", "publish the design doc and create the slices", or any intent to spin up project-tracking infrastructure all at once. Trigger broadly on combined-publish-and-ticket intent. The skill is a thin orchestration wrapper around `/confluence-publish-markdown` and `/jira-decompose-epic` plus its own hub-page generation. Use the atomic skills directly when you only need one half of the workflow.
+disable-model-invocation: true
 ---
 
 # scaffold-engineering-project

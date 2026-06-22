@@ -25,7 +25,7 @@ This skill does the *detection* — fast, deterministic, scriptable — and the 
 
 Trigger phrases (intentionally broad):
 - "sync indexes" / "repair code-projects" / "audit code repos"
-- "check for orphan repos" / "what's in 2-Coding that's not in the index?"
+- "check for orphan repos" / "what's in 3-Coding that's not in the index?"
 - "is my index up to date?" / "any code repos drifting?"
 - "what code repos do i have?" — if the user is asking from doubt rather than certainty
 - "/sync-indexes"

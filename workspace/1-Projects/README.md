@@ -6,7 +6,7 @@ Active initiatives with a clear deliverable and a defined "done" state.
 
 A project in this workspace is **time-bound work with a specific outcome**. Each project lives at `<workspace.root>/1-Projects/YYYY-MM-<slug>/` and gets a `CLAUDE.md` (status frontmatter) plus an append-only `memory.md` (decision log).
 
-If something will "always be ongoing" (your job role, a hobby, weekly responsibilities) it's *not* a project. This harness intentionally has no "Areas" folder — ongoing rhythms get handled by skills (`/briefing`, `/standup`) or stay in your memory.
+If something will "always be ongoing" (your job role, a hobby, weekly responsibilities) it's *not* a project — it's an **Area**. A long-running area of responsibility becomes an HQ workstation under `2-Areas/<name>/` (see `2-Areas/README.md` and the HQ model in `CLAUDE.md`); pure recurring rhythms (daily triage) get handled by skills (`/briefing`) or stay in memory.
 
 ## What belongs here
 
@@ -20,9 +20,9 @@ If something will "always be ongoing" (your job role, a hobby, weekly responsibi
 
 - ✗ "Health and fitness" — ongoing, no end-state → personal habit, not workspace material
 - ✗ "Daily email triage" — recurring activity → handled by `/briefing`
-- ✗ "Random research on LLM pricing" → `3-Resources/research/`
+- ✗ "Random research on LLM pricing" → `4-Resources/research/`
 - ✗ "Half-baked idea I'm not sure about" → `0-Inbox/`, triaged via `/inbox-process`
-- ✗ A code repo → `2-Coding/<scope>/<name>/` (use `/new-project` with code-repo branch)
+- ✗ A code repo → `3-Coding/<scope>/<name>/` (use `/new-project` with code-repo branch)
 
 ## Structure
 
@@ -72,14 +72,14 @@ Append-only. Each entry is a dated block describing decisions, blockers, next ac
 - **`/briefing`** — reads each project's `memory.md` tail + `CLAUDE.md` status to recommend today's highest-leverage work
 - **`/find <topic>`** — searches across all project memories for past decisions on a topic
 - **`/prune-projects`** — Friday-batch review of stale projects (no activity in 14+ days); archives or revives
-- **`/archive-project <slug>`** — moves a completed project to `4-Archive/` and flips status to `done`
+- **`/archive-project <slug>`** — moves a completed project to `5-Archive/` and flips status to `done`
 
 ## Project lifecycle
 
-1. **Scaffold** — `/new-project` creates the folder + frontmatter. If a similar project already exists, Step 0 of `/new-project` will offer to revive it from `4-Archive/` instead of forking a duplicate.
+1. **Scaffold** — `/new-project` creates the folder + frontmatter. If a similar project already exists, Step 0 of `/new-project` will offer to revive it from `5-Archive/` instead of forking a duplicate.
 2. **Work** — append to `memory.md` as decisions land; update `CLAUDE.md` status if it changes (e.g., `active` → `paused`)
 3. **Review** — weekly `/briefing` surfaces project state; `/prune-projects` catches stale ones every Friday
-4. **Complete** — `/archive-project <slug>` moves it to `4-Archive/` and flips status to `done`. Optional one-paragraph retro appended to `memory.md` before the move.
+4. **Complete** — `/archive-project <slug>` moves it to `5-Archive/` and flips status to `done`. Optional one-paragraph retro appended to `memory.md` before the move.
 
 ## Conventions
 
@@ -90,11 +90,11 @@ Append-only. Each entry is a dated block describing decisions, blockers, next ac
 
 ## When to archive
 
-Move to `4-Archive/` (via `/archive-project`) when:
+Move to `5-Archive/` (via `/archive-project`) when:
 - All deliverables shipped
 - Project was killed or descoped
 - Inactive for 30+ days with no plan to resume
-- Transformed into a code repo (cleaner home in `2-Coding/`)
+- Transformed into a code repo (cleaner home in `3-Coding/`)
 
 Always append a "wrap-up" entry to `memory.md` before archiving — what shipped, what didn't, what `<user.name>` learned. Provenance survives.
 

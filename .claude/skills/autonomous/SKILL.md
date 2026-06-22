@@ -1,6 +1,7 @@
 ---
 name: autonomous
-description: SDLC pipeline — assess plan prepare execute validate evolve
+description: >-
+  Autonomously implement a software task end-to-end — feature build, bug fix, or multi-milestone greenfield project. Orchestrates worker agents via TDD (plan, test-first, implement, validate, evolve). Use when the user says 'implement this autonomously', 'build feature X with tests', 'run the SDLC pipeline on', 'autonomous implementation of', 'scaffold and build it'. NOT for open-ended research (use /research) or one-off edits.
 user-invocable: true
 ---
 

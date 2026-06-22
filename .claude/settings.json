@@ -4,18 +4,7 @@
     "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/status.mjs\""
   },
   "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start-tasks.mjs\"",
-            "timeout": 6
-          }
-        ]
-      }
-    ],
+    "SessionStart": [],
     "UserPromptSubmit": [
       {
         "matcher": "",
@@ -93,6 +82,16 @@
           }
         ]
       }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git push https://bitbucket.org/sambatv/*)",
+      "Bash(git -C * push https://bitbucket.org/sambatv/*)",
+      "Bash(git push https://bitbucket.org/sambatv/*)",
+      "Bash(git -C * push https://bitbucket.org/sambatv/*)",
+      "Bash(git push https://bitbucket.org/sambatv/*)",
+      "Bash(git -C * push https://bitbucket.org/sambatv/*)"
     ]
   }
 }

@@ -1,6 +1,7 @@
 ---
 name: bootup
-description: Get a project agent-ready — readiness setup + mode selection
+description: >-
+  Get a code project agent-ready — score readiness across 27 criteria in 7 categories, auto-fix mechanical gaps, load context blocks, then route to research / autonomous / review mode. Use when the user says '/bootup', 'get this project ready for Claude agents', 'run a readiness check', 'score this codebase', 'prepare this repo for agent work', or 'set up agent tooling for this project'. Spawns Task agents to score and fix; does not edit business code directly. NOT first-run fork setup (that is /bootstrap).
 user-invocable: true
 allowed-tools: [AskUserQuestion, Agent, Bash]
 ---
@@ -45,11 +46,11 @@ Spawn Task agent with prompt based on project_type:
 ```
 Assess and improve this existing project's readiness.
 
-1. Run: bash scripts/readiness.sh .
+1. Run: bash "$CLAUDE_PROJECT_DIR/.claude/skills/bootup/scripts/readiness.sh" .
    Detects tech stack and scores readiness (27 criteria, 7 categories).
-2. Run: bash scripts/readiness-fix.sh .
+2. Run: bash "$CLAUDE_PROJECT_DIR/.claude/skills/bootup/scripts/readiness-fix.sh" .
    Fills missing configs (linters, formatters, type-checkers, etc.)
-3. Run: bash scripts/readiness.sh .
+3. Run: bash "$CLAUDE_PROJECT_DIR/.claude/skills/bootup/scripts/readiness.sh" .
    Re-score after fixes.
 4. Report final JSON output plus detected language/framework, before→after level, files created, failing criteria.
 
@@ -60,9 +61,9 @@ Use Bash only. Do NOT modify source code files.
 ```
 Set up new {lang}/{framework} project for development.
 
-1. Run: bash scripts/readiness-fix.sh .
+1. Run: bash "$CLAUDE_PROJECT_DIR/.claude/skills/bootup/scripts/readiness-fix.sh" .
    Scaffolds configs (linters, formatters, .gitignore, etc.)
-2. Run: bash scripts/readiness.sh .
+2. Run: bash "$CLAUDE_PROJECT_DIR/.claude/skills/bootup/scripts/readiness.sh" .
    Scores readiness (27 criteria, 7 categories, level 1-5).
 3. Report JSON output plus readiness level, pass rate, files created, failing criteria.
 
@@ -86,7 +87,7 @@ Fix semantic gaps needing project understanding:
 Only fix listed failures. Use FastEdit MCP tools for existing files, Write for new files.
 ```
 
-After completion, run `bash scripts/readiness.sh .` for final score.
+After completion, run `bash "$CLAUDE_PROJECT_DIR/.claude/skills/bootup/scripts/readiness.sh" .` for final score.
 
 Spawn Task agent to pull relevant knowledge:
 

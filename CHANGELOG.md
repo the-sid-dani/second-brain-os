@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-06-22
+
+### Added — v0.3.0 (Areas / HQ model + 6-folder PARA + MCP setup fix)
+
+The big structural release: the public OS adopts the **`2-Areas/` HQ-workstation model** at full parity with the development fork, the PARA layout moves from 5 folders to 6, and the broken default MCP setup is fixed at its root (the extractor heredoc).
+
+**6-folder PARA (was 5).** `2-Areas/` is added as PARA's Areas tier (evergreen HQ workstations) and the rest renumber: `2-Coding → 3-Coding`, `3-Resources → 4-Resources`, `4-Archive → 5-Archive`. Configuration gains `workspace.areas = 2-Areas`. Every doc, template, skill reference, and the workspace skeleton move to the new numbering.
+
+**HQ / Active Project model — now taught as core.** `CLAUDE-template.md` reframes the HQ model from "optional pattern" to the OS's core organizational pattern: each `2-Areas/<name>/` is an evergreen workstation (its own `CLAUDE.md` + `memory.md` + `resources/`); bounded `1-Projects/` deposit durable artifacts into a `parent_hq:` on completion; a routing-map table in `memory.md` loads only the matched HQ per turn (progressive context loading); the completion ritual is enforced by `/archive-project`. A fresh fork still ships `2-Areas/` empty — you grow into HQs. New tracked `2-Areas/README.md` documents the tier.
+
+**MCP setup fixed (root cause).** The default `.mcp.json` now ships the **3 documented universals** (gemini-vision, exa, firecrawl) instead of pre-wiring slack/atlassian/figma (which threw 3 red OAuth errors on every fresh fork's first launch). The opt-in connectors are added interactively by `/bootstrap` Step 2.5, which reads canonical entries from `.mcp.json` `_notes.opt_in_{slack,atlassian,figma}` — those notes now exist (they didn't before, so Step 2.5 had nothing to read). `firecrawl` was previously documented but never registered.
+
+### Removed
+
+Three skills + one hook bound to the maintainer's private infrastructure (not usable by a fork) were dropped from the public bundle. **Skill count 48 → 45; hook count 9 → 8.**
+
+- **`samba-publish` skill** — Samba-internal (publish.samba.com + @samba SSO). Fork users adapt their own static-site publisher.
+- **`todo` skill** (+ `todo/lib/ntn.sh`) — bound to the maintainer's personal Notion "Action Items" DB via the `ntn` CLI; a fork has no such database or schema.
+- **`end-of-day` skill** — coupled to Notion + the `gws` CLI + the maintainer's Cloud Run MCPs + Tactiq.
+- **`session-start-tasks` hook** — injected the same Notion "Action Items" DB at session start. Removed from the copy set and stripped from the public `settings.json` SessionStart wiring.
+
+### Removed — gbrain semantic arm (maintainer pilot)
+
+The **gbrain** semantic-search arm (a maintainer pilot — a local PGLite index served by an `mcp__gbrain__*` MCP) is stripped from the public export. It had been folded into `/find` *after* v0.2.2, so this is the first release that would otherwise have shipped it to forks that have no gbrain MCP.
+
+- New mechanism: maintainer-pilot content is wrapped in `<!-- public:strip -->` … `<!-- /public:strip -->` markers (invisible HTML comments — the dev fork keeps full functionality); a Phase-6 extractor transform deletes marked blocks, drops `mcp__gbrain__*` from `allowed-tools`, and removes the gbrain clause from `/find`'s description. A fail-closed grep ensures **zero** `gbrain` strings survive in the export.
+- Affected skills: `find` (the whole Step 2b semantic arm + ranking rows + failure modes), `os-guide` (two routing rows), `contact-log` (an attribution). Public `/find` is now lexical-only — identical behavior to v0.2.2, plus the new `2-Areas` search path.
+
+### Fixed (extractor + source)
+
+- `extract-template.sh`: the Phase 4 `.mcp.json` heredoc (root cause of the MCP bug) now emits the 3-universal + opt-in config; the token-pattern check allows the `Bearer ${FIRECRAWL_API_KEY}` env placeholder while still failing closed on literal bearer tokens.
+- The Phase 1 source leakage probe now scans **only the shipped-skill directories** (the actual export surface) instead of all of `.claude/skills/`, so non-shipped dev skills (cleanup-root, etc.) no longer false-trip it.
+- Phase 7 ships a tracked `2-Areas/README.md` and no longer builds a `3-Coding/work|personal|forks|archive` sub-tree — `3-Coding` is **flat** (one folder per repo), consistent across all docs.
+- os-guide runtime sync cache (`state/last-sync.json`) is purged from the export (it listed the maintainer's full skill inventory); the `state/.gitkeep` still ships so the dir exists for forks.
+- Genericized stray maintainer references caught by the leak gates: `briefing` ("Beru Artifact System" → "Artifact System"), `new-project` / `end-of-day` / `os-guide` (private workspace paths → token/generic forms).
+- README skill/hook counts corrected; the "Areas was deliberately cut / 5-folder" contradictions removed across README, workspace READMEs, and os-guide.
+
 ## [0.2.2] - 2026-05-30
 
 ### Added — v0.2.2 (persona-template conceptual model + 12-day fork re-sync)
@@ -34,8 +71,8 @@ Six source files carried literal names or private workspace paths introduced dur
 
 **Second pass — company / internal-org markers** (caught by a new extractor gate, see below):
 - `INSTALL.md` — dropped the "Samba employees: gws installed via internal samba-onboarding flow" callout
-- `workspace/3-Resources/contacts/README.md` — removed a maintainer-internal "Locked by decisions #21/#22 in <private-project>/system-design.md" provenance line
-- `workspace/3-Resources/meetings/README.md` — "For Samba employees: Tactiq/Gemini in fixed Drive folders" → generic "record your transcription tool's Drive-folder IDs in TOOLS.md"
+- `workspace/4-Resources/contacts/README.md` — removed a maintainer-internal "Locked by decisions #21/#22 in <private-project>/system-design.md" provenance line
+- `workspace/4-Resources/meetings/README.md` — "For Samba employees: Tactiq/Gemini in fixed Drive folders" → generic "record your transcription tool's Drive-folder IDs in TOOLS.md"
 - `thinking-partner/SKILL.md` — worked-example decision tree de-branded: "Champions website" → "internal team portal", "AI Champions only" → "internal team only", `ai-champions.pages.dev` → `team-portal.example.com`
 - `atlassian-attach/` (SKILL.md + scripts/attach.py) — three `samba-onboarding/README.md` token-setup pointers → Atlassian's official API-token page + `ATLASSIAN_BASIC_AUTH` env-var guidance
 
@@ -59,12 +96,12 @@ The v0.2.0 release inadvertently shipped without three productivity skills and t
 
 **Hooks (2):**
 - **`session-start-tasks.mjs`** — SessionStart hook that injects current Notion task state (overdue + due today, 1st Priority) into session context, so the assistant is always aware of pending tasks before responding. Fails silently if `NOTION_API_TOKEN` / `NOTION_ACTION_ITEMS_DS` env vars are missing. Pairs with `/todo`.
-- **`pre-slack-draft-contact-check.mjs`** — PreToolUse hook that, when drafting/sending a Slack message to a known contact, emits the contact-file context to stderr so the model sees relationship + open commitments + tone notes BEFORE the draft lands. Requires a `.claude/.slack-id-map.json` (Slack user IDs → contact slugs) and contact files at `<workspace.root>/3-Resources/contacts/<slug>.md`. Auto-discovers workspace root by globbing; fails silently if map or contacts missing.
+- **`pre-slack-draft-contact-check.mjs`** — PreToolUse hook that, when drafting/sending a Slack message to a known contact, emits the contact-file context to stderr so the model sees relationship + open commitments + tone notes BEFORE the draft lands. Requires a `.claude/.slack-id-map.json` (Slack user IDs → contact slugs) and contact files at `<workspace.root>/4-Resources/contacts/<slug>.md`. Auto-discovers workspace root by globbing; fails silently if map or contacts missing.
 
 ### Changed
 
 - **`scripts/extract-template.sh` allowlist updated**: 45 → 48 skills (added `atlassian-attach`, `end-of-day`, `todo`); 7 → 9 hooks copied (added `session-start-tasks`, `pre-slack-draft-contact-check`). Header comment updated to reflect new counts.
-- **`pre-slack-draft-contact-check.mjs` workspace-path auto-discovery**: previously hardcoded `beru-workspace/3-Resources/contacts/`. Now globs `*/3-Resources/contacts/` at project root, so it works for any workspace name (`workspace`, `brain`, `vault`, etc.) — set by `/bootstrap` or fork user.
+- **`pre-slack-draft-contact-check.mjs` workspace-path auto-discovery**: previously hardcoded `beru-workspace/4-Resources/contacts/`. Now globs `*/4-Resources/contacts/` at project root, so it works for any workspace name (`workspace`, `brain`, `vault`, etc.) — set by `/bootstrap` or fork user.
 - **`atlassian-attach` scripts/attach.py**: removed `sambatv` hardcoded default for Atlassian subdomain; now empty default with a clear error message pointing to `ATLASSIAN_INSTANCE` env var or `--instance` flag. Example issue keys in docs changed from `AITF-450` (Samba's Atlassian project key) to generic `PROJ-450`.
 
 ### Fixed (PII scrub before ship)
@@ -99,7 +136,7 @@ Caught and fixed before the v0.2.1 bundle left the dev repo:
 - **`.mcp.json` interactive opt-in via `/bootstrap` Step 2.5.** Default `.mcp.json` ships **3 universals only** (gemini-vision / exa / firecrawl) — zero red errors on a fresh `claude` launch. Slack / Atlassian / Figma canonical entries live in `.mcp.json` `_notes.opt_in_*` (single source of truth) and get appended to `mcpServers` interactively when the fork user picks them during bootstrap.
 - **firecrawl MCP** added as the third universal default — official remote MCP at `https://mcp.firecrawl.dev/v2/mcp`, auth via `FIRECRAWL_API_KEY` env var.
 - **`assistant.pronoun` field** added to `/bootstrap` Step 4a (options: she / he / they / no-pronouns). Configuration block now includes `assistant.pronoun = X`; all `<him/her/them>` placeholder strings resolve to the chosen pronoun in bootstrap output.
-- **Day 2+ rhythms externalized** to `beru-workspace/3-Resources/onboarding/day-2-plus.md`. `/bootstrap` final message links to it instead of inlining the content.
+- **Day 2+ rhythms externalized** to `beru-workspace/4-Resources/onboarding/day-2-plus.md`. `/bootstrap` final message links to it instead of inlining the content.
 
 ### Changed
 
@@ -116,7 +153,7 @@ Caught and fixed before the v0.2.1 bundle left the dev repo:
 - **ffmpeg / yt-dlp probes** dropped from `scripts/lib/verify.sh`.
 - **TOOLS.md rows** for ffmpeg + yt-dlp removed (the binaries may still exist on Sid's machine but are no longer managed by the installer).
 - **Slack / Atlassian / Figma** removed from default `.mcp.json` `mcpServers` (preserved in `_notes.opt_in_*` for bootstrap re-add). Fresh-fork `/mcp` now shows 3 entries, zero red errors. Sid's existing fork: project-scope entries gone; user-scope registrations via samba-onboarding unaffected.
-- **`SAMBA_ONBOARDING_DETECTED` block dropped from `scripts/install.sh`.** The Samba-employee detection branch + closing-banner hints leaked the private path `beru-workspace/2-Coding/samba-onboarding/` into the public OS bundle. Caught by `extract-template.sh` PHASE 10 path-ref leakage probe before shipping to `second-brain-os`. Samba employees still install their internal CLIs by running samba-onboarding directly — they don't need the daily-agents installer to surface that fact.
+- **`SAMBA_ONBOARDING_DETECTED` block dropped from `scripts/install.sh`.** The Samba-employee detection branch + closing-banner hints leaked the private path `beru-workspace/3-Coding/samba-onboarding/` into the public OS bundle. Caught by `extract-template.sh` PHASE 10 path-ref leakage probe before shipping to `second-brain-os`. Samba employees still install their internal CLIs by running samba-onboarding directly — they don't need the daily-agents installer to surface that fact.
 
 ### Notes
 
@@ -141,7 +178,7 @@ Caught and fixed before the v0.2.1 bundle left the dev repo:
   1. **What is this?** (concept first)
   2. **How it works** — new section explaining the three layers (skills / PARA workspace / Configuration tokens) and the two-stage setup model (shell `install.sh` for power-user toolchain, Claude `/bootstrap` for personalization)
   3. **Install** — now framed as "you're trying to reach `/bootstrap`; everything else is plumbing." Path A (Minimal) is `clone → cd → claude → /bootstrap`; Path B (Lite CCv4) adds `./scripts/install.sh --no-fastedit-model` before `claude`; Path C (Full) drops the flag.
-  4. **The PARA workspace** — explains each of the 5 folders (`0-Inbox`, `1-Projects`, `2-Coding`, `3-Resources`, `4-Archive`) with a "what goes in it" + "why it exists" column. New callout that `/bootstrap` creates the empty folder skeleton; skills own the content.
+  4. **The PARA workspace** — explains each of the 5 folders (`0-Inbox`, `1-Projects`, `3-Coding`, `4-Resources`, `5-Archive`) with a "what goes in it" + "why it exists" column. New callout that `/bootstrap` creates the empty folder skeleton; skills own the content.
   5. Reference sections (Project map, Configuration tokens, Update Rules, What's included, Quick reference) come after.
 - **`/bootstrap` reframed as the central setup step.** Previous README treated `install.sh` and `/bootstrap` as equally-weighted install steps. The new framing: `/bootstrap` is THE step that personalizes the OS to you; `install.sh` is optional plumbing that only matters if you want `/research`, `/autonomous`, `/premortem`, `/review`. Minimal-tier users skip `install.sh` entirely.
 
@@ -168,7 +205,7 @@ Caught and fixed before the v0.2.1 bundle left the dev repo:
 
 ### Changed
 
-- **Installer rebrand — fork users now see "Second-Brain OS Installer" instead of "Samba Onboarding".** Stale `samba-onboarding`-named language was leaking into the user-facing surfaces of the v0.1.19 bundle — the installer header, log file (`~/samba-onboarding.log`), shell-rc comment block, runtime "samba-onboarding artifacts detected" message, and the `INSTALL.md` troubleshooting section all referenced the company-internal install tool that fork users don't have. Renamed in 6 files: `scripts/lib/ui.sh` (header + subtitle + log filename), `scripts/lib/prereqs.sh` (shell-rc comment + stale "Installing Samba CLIs" reference), `scripts/lib/verify.sh` (post-install hints), `scripts/install.sh` (top-of-file comment + variable rename `SAMBA_DONE`→`FOUNDATION_INSTALLED` + foundation-detection message), `INSTALL.md` (troubleshooting section), and `beru-workspace/3-Resources/templates/scripts/transcript-extract.sh` (comment). Detection logic widened from `gh + gws + claude` to `gh + claude` (gws isn't shipped in this bundle).
+- **Installer rebrand — fork users now see "Second-Brain OS Installer" instead of "Samba Onboarding".** Stale `samba-onboarding`-named language was leaking into the user-facing surfaces of the v0.1.19 bundle — the installer header, log file (`~/samba-onboarding.log`), shell-rc comment block, runtime "samba-onboarding artifacts detected" message, and the `INSTALL.md` troubleshooting section all referenced the company-internal install tool that fork users don't have. Renamed in 6 files: `scripts/lib/ui.sh` (header + subtitle + log filename), `scripts/lib/prereqs.sh` (shell-rc comment + stale "Installing Samba CLIs" reference), `scripts/lib/verify.sh` (post-install hints), `scripts/install.sh` (top-of-file comment + variable rename `SAMBA_DONE`→`FOUNDATION_INSTALLED` + foundation-detection message), `INSTALL.md` (troubleshooting section), and `beru-workspace/4-Resources/templates/scripts/transcript-extract.sh` (comment). Detection logic widened from `gh + gws + claude` to `gh + claude` (gws isn't shipped in this bundle).
 - **`os-guide` skill body genericized.** Removed ~15 abstract `decision #N` and `system-design.md` cross-references that wouldn't resolve for fork users (the design log is maintainer-private). Skill remains operative: still routes OS-shaped questions to canonical sources, still cites with file:line refs. Dropped the "Locked design decisions" routing-table subsection entirely (was Sid-private). Replaced "After locking a new decision in `system-design.md` §7" with "in your fork's design log (if you keep one)". Cleaner for forkers, no functional change for the maintainer.
 - **Contact-skill examples genericized to placeholder names.** `contact/SKILL.md` and `contact-log/SKILL.md` taught the fuzzy-match algorithm using literal Samba colleague names (Omar Zennadi / Jaya Aswani / Alyson Sprague / Bob van Toorn / Lena Kincaid / Michael Zennadi). Replaced consistently across the skill bodies with placeholder names (Alex Chen / Priya Patel / Jordan Rivera / Robin van Pelt / Lena Okoye / Michael Chen + michele anti-regression example) that preserve the algorithmic structure including the substring-vs-token anti-regression rule.
 - **Briefing skill body genericized.** `briefing/SKILL.md`: 9 literal "Sid" references replaced with `<user.name>` or "the user"; tagline examples changed from "Omar's waiting on you" to "Alex is waiting on you"; the "Origin incident" callout that named real colleagues (Bob/Jay/Walter/Phillip group DM) replaced with the abstract "a multi-person DM thread containing the highest-leverage open question was invisible" version that preserves the technical lesson.
@@ -189,7 +226,7 @@ Caught and fixed before the v0.2.1 bundle left the dev repo:
 - **`os-guide` skill** — runtime-read librarian over the OS's canonical source files. Answers "how does X work in this OS?" by routing the question to its canonical source (CLAUDE.md / README.md / SOUL.md / TOOLS.md / SKILL.md files), reading at runtime, and citing with file:line refs. Two-audience design: (a) Claude Code self-correcting mid-session before writing an OS-shaped claim from memory, (b) fork users in their first 30 days. Read-only by default; `/os-guide --sync` is the only mutation mode and refreshes the routing table after new tools / skills / brands / decisions are added. Locked principle: explainer skills must be runtime-read librarians, not textbooks — referencing canonical sources, never reproducing them.
 - **`external-action-guard.mjs` hook** — PreToolUse show-and-confirm friction on irreversible external actions: Slack send (`mcp__slack__slack_send_message` + `slack_schedule_message`), GitHub destructive push (`git push --force` or `git push` targeting main/master), Atlassian writes (Jira issue create/edit/transition + Confluence page create/update), `rm -rf` outside whitelisted paths (`/tmp/`, `node_modules/`, `__pycache__/`, `.venv/`, `dist/`, `build/`, `.tldr/`, `.workflow/`). Emits `permissionDecision: "ask"` via modern `hookSpecificOutput` format — block is show-and-confirm, not show-and-deny. Goal: friction at the moment of action, not refusal. Fails open on any error.
 - **`/os-guide` consult section in CLAUDE-template.md** — tells Claude to invoke `/os-guide` instead of answering OS-shaped questions from memory. Specifically applies before writing a workspace path, Configuration value, schema field, skill-behavior claim, or tool-connection-state claim into a user-facing response.
-- **"What is PARA in this OS?" section in README-template.md** — table explaining the 5-folder workspace layout (`0-Inbox`, `1-Projects`, `2-Coding`, `3-Resources`, `4-Archive`) with a Configuration-token bridge and a "Areas was deliberately cut" callout. Helps fork users distinguish the in-this-OS implementation from Tiago Forte's generic PARA framework.
+- **"What is PARA in this OS?" section in README-template.md** — table explaining the 5-folder workspace layout (`0-Inbox`, `1-Projects`, `3-Coding`, `4-Resources`, `5-Archive`) with a Configuration-token bridge and a "Areas was deliberately cut" callout. Helps fork users distinguish the in-this-OS implementation from Tiago Forte's generic PARA framework.
 - **"How to add a tool" section in TOOLS-template.md** — step-by-step guide for adding MCP servers (declare in `.mcp.json` → authorize via `/mcp` → probe → flip status → `/os-guide --sync`) and CLI tools (install → auth probe → add row → `/os-guide --sync`). Plus a "Removing a tool" subsection. Each path has a verification probe baked in.
 - **Two new Quick Reference rows in README-template.md** — `/os-guide` for understanding how X works in this OS, `/os-guide --sync` for refreshing the routing table after additions.
 - **`/os-guide` Day 1 + Day 2+ mentions in `bootstrap` SKILL.md** — Day 1 onboarding now points fork users at `/os-guide` after `/bootstrap`, and Day 2+ rhythms list `/os-guide --sync` as the after-adding-a-tool follow-up.
@@ -216,7 +253,7 @@ Caught and fixed before the v0.2.1 bundle left the dev repo:
 - **`scripts/install.sh` final message rewritten** — explicitly points fork users at `claude` → `/bootstrap` → `/mcp` as the three-step post-install flow. Previous message was a generic "install complete" with no next-step pointer.
 - **`scripts/lib/verify.sh` "Post-install manual steps"** reordered with `/bootstrap` as Step 1 (was buried below MCP OAuth hints).
 - **`/bootstrap` Step 2 now probes the CCv4 toolchain** (`bloks`, `tldr`, `fastedit`). New `ccv4_install_state` field (`all-present` / `partial` / `none`). When all three are missing, Step 2 surfaces a strong pre-gate prompt recommending the user abort and run `install.sh` first; Section 8's "What needs your attention" surfaces this case FIRST.
-- **`beru-workspace/3-Resources/templates/persona/TOOLS-template.md` rewritten** as a structural reference, not a status-asserting file. Stripped misleading ✅ marks; added prominent header explaining `/bootstrap` Step 6c regenerates the live TOOLS.md from real probes. Added CCv4 toolchain section (was missing).
+- **`beru-workspace/4-Resources/templates/persona/TOOLS-template.md` rewritten** as a structural reference, not a status-asserting file. Stripped misleading ✅ marks; added prominent header explaining `/bootstrap` Step 6c regenerates the live TOOLS.md from real probes. Added CCv4 toolchain section (was missing).
 - **`README-template.md` skill counts corrected** — "26 design skills" → 14, "66 pre-built workflows" → 44, brand presets "73" → 72. Design category table now enumerates the 14 kept skills instead of the dropped variants.
 - **Brand-preset count corrected** — `bootstrap/SKILL.md` and README claimed 73; disk has 72.
 
@@ -309,7 +346,7 @@ First public release — the daily-agents harness extracted from Sid's private w
 
 ### Added
 
-- PARA workspace skeleton: `0-Inbox/` / `1-Projects/` / `2-Coding/` (`work`, `personal`, `forks`, `archive`) / `3-Resources/` (`contacts`, `meetings`, `reference`, `research`, `templates`, `design-systems`) / `4-Archive/`.
+- PARA workspace skeleton: `0-Inbox/` / `1-Projects/` / `3-Coding/` (`work`, `personal`, `forks`, `archive`) / `4-Resources/` (`contacts`, `meetings`, `reference`, `research`, `templates`, `design-systems`) / `5-Archive/`.
 - Interactive `/bootstrap` skill — first-run setup walking through identity, persona, design-system pick, workspace skeleton, and tool detection. Tiger invariants T1–T4: never overwrites edited persona files, refuses to re-run on a configured fork without `--reconfigure`, never auto-commits, never installs tools.
 - 74 shipped skills across 5 categories:
   - **15 first-party lifecycle**: `archive-project`, `bootstrap`, `briefing`, `budget-tracker`, `contact`, `contact-log`, `desktop-organizer`, `find`, `inbox-process`, `new-project`, `prune-projects`, `save-resource`, `skill-creator`, `sync-indexes`, `thinking-partner`.

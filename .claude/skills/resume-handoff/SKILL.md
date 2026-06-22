@@ -1,6 +1,7 @@
 ---
 name: resume-handoff
-description: Resume work from handoff document with context analysis and validation
+description: >-
+  Resume work from a previous session's handoff document. Use when the user says 'continue from last session', 'pick up where we left off', 'load the handoff', 'resume from handoff', 'what was I working on', or '/resume-handoff'. Reads the handoff YAML, verifies current codebase state, presents a synthesis with recommended next actions, then optionally resumes an /autonomous session. Pass a path or ticket number, or omit for workspace-wide discovery.
 user-invocable: true
 ---
 
@@ -25,7 +26,7 @@ Use `<state_root>/continuum/...` and `<handoff_root>/handoffs/{session-name}/...
 
 Resume work from handoff through interactive analysis. Handoffs contain critical context, learnings, next steps from previous sessions requiring full understanding before continuation.
 
-**Parameter Handling:** If handoff path provided, immediately read document and linked research/plans under `<handoff_root>/plans` or `<handoff_root>/research` — no sub-agents for critical files. If ticket number (ENG-XXXX) provided, list `<handoff_root>/handoffs/ENG-XXXX/` contents. Zero files or missing directory: "Can't find handoff, please provide path." One file: proceed. Multiple files: use most recent by YYYY-MM-DD_HH-MM timestamp. No parameters (single-project mode): respond with "I'll help resume from handoff. Which would you like? Tip: /resume_handoff path or /resume_handoff ENG-XXXX"
+**Parameter Handling:** If handoff path provided, immediately read document and linked research/plans under `<handoff_root>/plans` or `<handoff_root>/research` — no sub-agents for critical files. If ticket number (ENG-XXXX) provided, list `<handoff_root>/handoffs/ENG-XXXX/` contents. Zero files or missing directory: "Can't find handoff, please provide path." One file: proceed. Multiple files: use most recent by YYYY-MM-DD_HH-MM timestamp. No parameters (single-project mode): respond with "I'll help resume from handoff. Which would you like? Tip: /resume-handoff path or /resume-handoff ENG-XXXX"
 
 **No-args workspace-wide discovery:** If no arguments and CWD resolves to multi-project mode (per Step 0), scan `<handoff_root>/handoffs/*/` for the most recent handoff (mtime-sorted), present its session-name + date + summary, then `AskUserQuestion`: "Resume this, or pick a different one?" If user picks "different", list all session folders mtime-sorted with last-handoff date and let user pick. Single-project mode falls through to the prompt above.
 

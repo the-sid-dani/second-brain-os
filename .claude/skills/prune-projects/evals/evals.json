@@ -10,9 +10,9 @@
       "assertions": [
         {"text": "Skill ran the project-query.sh script (or equivalent staleness scan)"},
         {"text": "Skill identified the stale-test-1-* projects as stale candidates"},
-        {"text": "stale-test-1-a was moved to 4-Archive/ with status: done"},
-        {"text": "stale-test-1-b was moved to 4-Archive/ with status: done"},
-        {"text": "stale-test-1-c was moved to 4-Archive/ with status: done"},
+        {"text": "stale-test-1-a was moved to 5-Archive/ with status: done"},
+        {"text": "stale-test-1-b was moved to 5-Archive/ with status: done"},
+        {"text": "stale-test-1-c was moved to 5-Archive/ with status: done"},
         {"text": "Real active projects (second-brain-design, all-hands-prep) were NOT touched"}
       ]
     },
@@ -24,9 +24,9 @@
       "files": [],
       "assertions": [
         {"text": "Skill triggered on 'Friday review' phrase"},
-        {"text": "stale-test-2-a was moved to 4-Archive/ with status: done"},
-        {"text": "stale-test-2-b was moved to 4-Archive/ with status: done"},
-        {"text": "stale-test-2-c was moved to 4-Archive/ with status: done"},
+        {"text": "stale-test-2-a was moved to 5-Archive/ with status: done"},
+        {"text": "stale-test-2-b was moved to 5-Archive/ with status: done"},
+        {"text": "stale-test-2-c was moved to 5-Archive/ with status: done"},
         {"text": "Real active projects were NOT touched"}
       ]
     },
@@ -38,9 +38,9 @@
       "files": [],
       "assertions": [
         {"text": "Skill triggered on the soft 'any projects I should archive?' phrase"},
-        {"text": "stale-test-3-a was moved to 4-Archive/ with status: done"},
-        {"text": "stale-test-3-b was moved to 4-Archive/ with status: done"},
-        {"text": "stale-test-3-c was moved to 4-Archive/ with status: done"},
+        {"text": "stale-test-3-a was moved to 5-Archive/ with status: done"},
+        {"text": "stale-test-3-b was moved to 5-Archive/ with status: done"},
+        {"text": "stale-test-3-c was moved to 5-Archive/ with status: done"},
         {"text": "Real active projects were NOT touched"}
       ]
     }

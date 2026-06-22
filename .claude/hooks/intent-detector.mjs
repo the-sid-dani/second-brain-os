@@ -112,7 +112,7 @@ const main = async () => {
 
     // /sync-indexes triggers — code-repo bookkeeping audit
     { name: "sync-indexes-explicit",    regex: /\b(sync indexes|sync code projects|audit code repos)\b/i,              suggest: "/sync-indexes" },
-    { name: "orphan-repos",             regex: /\b(orphan repos|whats? in 2-Coding|whats? in coding that isn[''']?t)\b/i, suggest: "/sync-indexes" },
+    { name: "orphan-repos",             regex: /\b(orphan repos|whats? in 3-Coding|whats? in coding that isn[''']?t)\b/i, suggest: "/sync-indexes" },
   ];
 
   // 3. Test all patterns. Multiple may match (e.g., "new MCP server project" hits two).

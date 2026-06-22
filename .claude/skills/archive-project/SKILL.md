@@ -1,6 +1,8 @@
 ---
 name: archive-project
-description: Moves a completed project from `<workspace.root>/<workspace.projects>/<slug>/` to `<workspace.root>/<workspace.archive>/<slug>/` and flips its frontmatter `status: active` → `status: done`. All paths come from the Configuration section in root CLAUDE.md — read those first. Use this whenever the user says they're done with a project, wants to wrap it up, or wants to clean up their active list — phrases like "archive the X project", "I'm done with X", "wrap up X", "move X to archive", "X is finished — clear it out", "shelve X for now". Optional one-paragraph retro gets appended to `memory.md` before the move so the decision context survives. Trigger even when the user doesn't say "archive" explicitly — finishing/wrapping/clearing language for a known project should invoke this skill rather than letting them `mv` by hand (which would skip the status flip and break `/prune-projects` later).
+disable-model-invocation: true
+description: >-
+  Moves a completed project from `<workspace.root>/<workspace.projects>/<slug>/` to `<workspace.root>/<workspace.archive>/<slug>/` and flips its frontmatter `status: active` → `status: done`. All paths come from the Configuration section in root CLAUDE.md — read those first. Use this whenever the user says they're done with a project, wants to wrap it up, or wants to clean up their active list — phrases like "archive the X project", "I'm done with X", "wrap up X", "move X to archive", "X is finished — clear it out", "shelve X for now". Optional one-paragraph retro gets appended to `memory.md` before the move so the decision context survives. Trigger even when the user doesn't say "archive" explicitly — finishing/wrapping/clearing language for a known project should invoke this skill rather than letting them `mv` by hand (which would skip the status flip and break `/prune-projects` later).
 allowed-tools: Read Edit Bash AskUserQuestion
 ---
 
@@ -28,7 +30,7 @@ Trigger phrases (not exhaustive):
 - "clean up the X work"
 
 Do NOT trigger for:
-- Code repos under `<workspace.coding>/` — those have their own git lifecycle. Use `/archive-code-project` (TBD) instead.
+- Code repos under `<workspace.coding>/` — those have their own git lifecycle; archive the repo manually (no dedicated skill for this).
 - Pausing a project — that's a status change to `paused`, not an archive. Edit the frontmatter directly.
 - Deleting — never. Archive is move, not delete.
 
@@ -122,12 +124,12 @@ Before printing the confirm block, read the project's CLAUDE.md frontmatter for 
 
 ```markdown
 
-## <YYYY-MM-DD> — Archived <slug> (parent_hq: hq-<name>)
+## <YYYY-MM-DD> — Archived <slug> (parent_hq: <name>)
 
-Project moved to archive. Tactical execution complete. Foundation/planning artifacts (if any) live in `hq-<name>/`. Project memory.md preserved at archive location.
+Project moved to archive. Tactical execution complete. Foundation/planning artifacts (if any) live in `2-Areas/<name>/`. Project memory.md preserved at archive location.
 ```
 
-Use `>>` append or Edit (file is append-only per CLAUDE.md rule — never rewrite). This gives the HQ owner a discovery hook later (<assistant.name> can grep memory/ for "Archived ... parent_hq: hq-X" to surface what's been wrapped under each HQ).
+Use `>>` append or Edit (file is append-only per CLAUDE.md rule — never rewrite). `parent_hq:` values are bare slugs (e.g. `ai-task-force`), so write the bare slug here too. This gives the HQ owner a discovery hook later (<assistant.name> can grep memory/ for "Archived ... parent_hq: <name>" to surface what's been wrapped under each HQ).
 
 Skip if `parent_hq: none` or missing — no audit trail needed for standalone projects (root memory.md / daily-log entry covers the move).
 

@@ -5,12 +5,12 @@ description: Track monthly spending, analyze budget vs actual, calculate savings
 
 # Budget Tracker
 
-Analyze spending, categorize expenses, track savings progress toward $30K goal.
+Analyze spending, categorize expenses, track savings progress toward a configurable savings goal (ask the user for their target).
 
 ## Workflow
 
 ### 1. Get Transaction Data
-Ask user for bank/card CSV exports (same as just-fucking-cancel):
+Ask user for bank/card CSV exports:
 - Apple Card: Wallet → Card Balance → Export
 - Chase: Accounts → Download activity → CSV
 - Multiple sources OK - will merge
@@ -55,7 +55,7 @@ Flag ambiguous transactions for user confirmation.
 
 ### 4. Generate Budget Report
 
-Output to: `workspace/1-Projects/personal-finance-2026-01/data/budgets/budget-YYYY-MM.md`
+Output to: `<workspace.root>/<workspace.projects>/<finance-project-slug>/outputs/budget-YYYY-MM.md` (ask the user for the target project folder if unset).
 
 ```markdown
 # Budget Report - [Month Year]
@@ -98,12 +98,12 @@ If multiple months available:
 - Seasonal patterns
 - Recommendations
 
-## Integration with just-fucking-cancel
+## Subscription audit (built-in)
 
-When subscriptions are found:
-1. List them in "Subscriptions Flagged" section
-2. Suggest running `/just-fucking-cancel` for full audit
-3. After audit, update totals with cancelled amounts
+When recurring subscriptions are found:
+1. List them in the "Subscriptions Flagged" section
+2. Flag candidates to cancel (unused / duplicate / price-crept)
+3. Update totals with any amounts the user decides to cancel
 
 ## Privacy
 

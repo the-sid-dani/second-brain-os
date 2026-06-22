@@ -1,6 +1,7 @@
 ---
 name: confluence-publish-markdown
 description: Port a local markdown file (design doc, investigation report, runbook) to a Confluence page — handles markdown → ADF conversion, renders embedded mermaid diagrams via mermaid.ink as external media, optionally injects a standard header info panel with Repo / Live / Jira cross-links. Use whenever the user wants to publish a markdown file to Confluence — phrases like "publish this design doc to Confluence", "port this markdown to <space>", "create a Confluence page from this .md", "ship system-design.md to the wiki", "update the Confluence page". Supports both create-new (`--parent-id`) and update-existing (`--page-id`) modes.
+disable-model-invocation: true
 ---
 
 # confluence-publish-markdown

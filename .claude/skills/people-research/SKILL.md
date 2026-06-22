@@ -1,6 +1,6 @@
 ---
 name: people-research
-description: People research using Exa search. Finds LinkedIn profiles, professional backgrounds, experts, team members, and public bios across the web. Use when searching for people, finding experts, or looking up professional profiles.
+description: People research using Exa search. Finds LinkedIn profiles, professional backgrounds, experts, team members, and public bios across the web. Use when searching for people, finding experts, or looking up professional profiles. NOT for company-level research (use /company-research); defers to /contact when the person is already a known internal contact.
 allowed-tools: Task mcp__exa__web_search_advanced_exa
 ---
 

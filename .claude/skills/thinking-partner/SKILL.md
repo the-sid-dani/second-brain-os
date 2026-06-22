@@ -1,6 +1,7 @@
 ---
 name: thinking-partner
-description: Flips <assistant.name> from "try to solve" into "ask questions first" mode — actively reads project files / memory / vault BEFORE asking, then uses AskUserQuestion (structured multi-choice with previews + a Recommended option) as the default question surface, with free-text only when options would constrain the user inappropriately. Runs in one of two modes auto-detected from trigger phrasing: PROBLEM MODE (open exploration, 5 abstract dimensions, 3-5 questions, periodic synthesis) when the user is wrestling with a half-formed PROBLEM; PLAN MODE (design-tree walk, branch-by-branch dependency resolution, no question cap, tree-state recap) when the user has a half-formed PLAN that needs decision-tree resolution. Stays in Q&A mode until the user says "ok, solve it" / "I'm ready" / "let's go" / "enough". Triggers — PROBLEM: "let's think through X", "help me explore Y", "I'm stuck", "noodle on V", "talk me through this", "let's brainstorm" · PLAN: "/grill-me", "interrogate this", "stress-test my plan", "walk the design tree", "I haven't thought through X". Do NOT trigger on clear factual questions or code-generation requests.
+description: >-
+  Flips <assistant.name> from "try to solve" into "ask questions first" mode — actively reads project files / memory / vault BEFORE asking, then uses AskUserQuestion (structured multi-choice with previews + a Recommended option) as the default question surface, with free-text only when options would constrain the user inappropriately. Runs in one of two modes auto-detected from trigger phrasing: PROBLEM MODE (open exploration, 5 abstract dimensions, 3-5 questions, periodic synthesis) when the user is wrestling with a half-formed PROBLEM; PLAN MODE (design-tree walk, branch-by-branch dependency resolution, no question cap, tree-state recap) when the user has a half-formed PLAN that needs decision-tree resolution. Stays in Q&A mode until the user says "ok, solve it" / "I'm ready" / "let's go" / "enough". Triggers — PROBLEM: "let's think through X", "help me explore Y", "I'm stuck", "noodle on V", "talk me through this", "let's brainstorm" · PLAN: "/grill-me", "interrogate this", "stress-test my plan", "walk the design tree", "I haven't thought through X". Do NOT trigger on clear factual questions or code-generation requests.
 allowed-tools: Read Edit Skill AskUserQuestion Bash Grep Glob
 ---
 
@@ -16,7 +17,7 @@ Mode skill, not a generator. Flips <assistant.name>'s default disposition from "
 
 This skill is a habit-flip: when triggered, <assistant.name> *deliberately* doesn't solve. It asks. The reason this earns its keep: the user has often pushed back during this very project's design sessions for exactly this reason ("you're jumping to solutions, slow down"). A slash command formalizes the correction so it doesn't depend on conversational discipline.
 
-Distinct from a hypothetical `/brainstorm` skill (not yet built) which would be divergent idea-generation ("give me 10 options"). This skill is *convergent through clarification* — it narrows the problem space, not expands it.
+Distinct from `/brainstorm` (a global skill — divergent idea-generation, "give me 10 options"). This skill is *convergent through clarification* — it narrows the problem space, not expands it. Route bare divergent option-generation requests to `/brainstorm`; own "brainstorm" only when ambiguity / stuck / "help me decide" signals are present.
 
 ## When to use
 
@@ -28,7 +29,7 @@ Trigger phrases (broad — exploration is the pattern, not the literal command):
 - "I'm not sure what to do about Z" / "I'm stuck on Z"
 - "I want to noodle on V" / "let me noodle on this"
 - "should we do A or B?" *only when followed by ambiguity signals* like "I don't know which", "what do you think", "I haven't decided"
-- "let's brainstorm" — despite the name, the user usually means clarification, not divergence; trigger this skill, and if they explicitly want option-generation, mention `/brainstorm` doesn't exist yet
+- "let's brainstorm" — despite the name, the user usually means clarification, not divergence; trigger this skill when ambiguity/stuck signals are present, and if they explicitly want divergent option-generation ("give me N options"), hand off to `/brainstorm`
 - "/thinking-partner"
 
 Do NOT trigger for:
@@ -65,7 +66,7 @@ This is the contract. The user knows which mode we're in and how to exit.
 Sources to actively read (in priority order):
 
 1. **Project files in scope** — if the topic names a project (`/contact`, `/find`, the conversation already references `<workspace.root>/<workspace.projects>/<slug>/`), Read its `CLAUDE.md`, `memory.md`, and any obvious deliverable docs (`system-design.md`, etc.). Don't skim — actually pull the relevant section into the question.
-2. **Notion / external state** — if the topic is task/commitment-shaped, query the live source (`/todo`, the Action Items DB) via Bash + curl before asking "what's outstanding". Never ask the user to enumerate what a tool can fetch in 2 seconds.
+2. **Task / commitment state** — if the topic is task/commitment-shaped, query whatever live task source you have wired (a task tracker, an issue board) before asking "what's outstanding". Never ask the user to enumerate what a tool can fetch in 2 seconds.
 3. **Vault search via `/find`** — only when the topic is unfamiliar or cross-project. Skip when files in scope already cover it.
 4. **Memory files** — `memory/MEMORY.md` index + day logs from the last week, check for prior decisions on this topic before re-litigating.
 5. **Calendar / meetings / Slack** — if the topic is people/meeting-shaped, probe via `gws` / Slack MCP before asking "who's involved".
