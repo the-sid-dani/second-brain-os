@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-06-24
+
+### Changed — onboarding rebuilt for knowledge workers
+
+- **README rewritten** (~480 → ~95 lines, 6 plain-language sections). The setup is now the single path `clone → claude → /bootstrap`; `install.sh` is demoted to an optional "going further" line. The maintainer-manual material (Configuration-token table, Update-Rules sub-tables, ASCII project map, 20-row quick-reference, tier-comparison table, 45-line paste-prompt) is gone — it's what `/os-guide` answers live and what `INSTALL.md` covers.
+- **`/bootstrap` slimmed + de-jargoned** for a knowledge-worker audience (~500 → fewer, plainer steps): the 12-line welcome script and the "full vs express?" gate are gone; the 7-section environment panel is a quick read-only check; `TOOLS.md` is demoted out of the critical path; each step opens with one plain why-it-matters sentence, not a script.
+- **Pronoun field removed entirely.** `assistant.pronoun` is dropped from the persona collection, the Configuration block (13 → 12 tokens), the echo-back, and all downstream `<pronoun>` resolution. Persona templates were already pronoun-free.
+- **Connector picker gains Google Workspace** (Gmail/Calendar/Drive) alongside Slack/Atlassian/Figma — Google Workspace + Slack are recommended (most users already use them).
+
+### Added
+
+- **Writing-voice from your own sent messages** (optional, post-setup, consent-gated). After core setup, `/bootstrap` offers to learn your voice from your **sent** Slack/Gmail messages (Slack via `from:<your-handle>`; Gmail via a connected Workspace MCP), detected at runtime — falling back to paste-a-sample. Reads ONLY messages you sent, only after explicit consent, never fabricates.
+- **`/migrate-work` skill** (new, standalone, offered at the end of `/bootstrap` and re-invokable). Brings your existing work into PARA by reading your **local Claude Cowork session transcripts** (`~/Library/Application Support/Claude/local-agent-mode-sessions/.../audit.jsonl`) — discovering the projects you've actually been working on, fanning out a read-only scout per project, then (after a single approval gate) scaffolding the chosen ones as `1-Projects/` or `4-Resources/` entries with a seeded `CLAUDE.md` + `memory.md`. Hard invariants: **copy-never-move**, read-only discovery, one approval gate, no fabrication, runnable code routes to `3-Coding/`, never auto-commits. (Filesystem-folder scanning was evaluated and rejected — sessions are the reliable signal of what someone actually works on.)
+
+### Notes
+
+Skill count 44 → 45 (`/migrate-work` added). All four `/bootstrap` tiger invariants (T1–T4) preserved.
+
 ## [0.3.1] - 2026-06-22
 
 ### Removed

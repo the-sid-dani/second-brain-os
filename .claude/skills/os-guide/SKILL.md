@@ -90,7 +90,7 @@ When multiple skills could match the user's phrasing, the priority is:
 | `/contact` | Per-person entity recall | "who is X" / "context on Y" where X/Y is a name | Anything not-a-person |
 | `/os-guide` | OS-meta — config, paths, schema, capability index, locked decisions, trigger-phrase map | "how does X work here" / "what is X in this OS" / "where does X live (structurally)" | User content (defer to `/find`); people (defer to `/contact`); first-run (defer to `/bootstrap`) |
 
-**Composition rule**: `/os-guide` MUST NOT call `/find` recursively for OS-knowledge questions (its canonical source list is hardcoded — see Routing Table below). `/bootstrap` SHOULD reference `/os-guide` in its Step 8 closer for ongoing-manual discovery. `/find` MAY route OS-shaped queries here (one-way; the reverse would loop).
+**Composition rule**: `/os-guide` MUST NOT call `/find` recursively for OS-knowledge questions (its canonical source list is hardcoded — see Routing Table below). `/bootstrap` SHOULD reference `/os-guide` in its closing for ongoing-manual discovery. `/find` MAY route OS-shaped queries here (one-way; the reverse would loop).
 
 ---
 
@@ -163,6 +163,7 @@ This is the librarian's shelves. **Every answer this skill gives MUST cite a row
 |---|---|---|
 | How to create a new project | `.claude/skills/new-project/SKILL.md` + `README.md` Quick Reference | The skill body is the authoritative procedure |
 | How to archive a project | `.claude/skills/archive-project/SKILL.md` | |
+| How to import / migrate existing work into the workspace | `.claude/skills/migrate-work/SKILL.md` | Reads past Cowork sessions; copy-never-move; offered at the `/bootstrap` close, re-invokable anytime |
 | How to prune stale projects | `.claude/skills/prune-projects/SKILL.md` | Friday-batch staleness review |
 | How to triage Inbox | `.claude/skills/inbox-process/SKILL.md` + Operating Principle "Capture before commit" | Drives the Inbox-to-home pipeline |
 | How to save a resource | `.claude/skills/save-resource/SKILL.md` | |
