@@ -28,9 +28,9 @@ Do NOT trigger for:
 ## Process
 
 1. **Read root `DESIGN.md`.** Missing → stop, point at `/use-design`.
-2. **Extract from the brief**: quarter label, date range, team name, objectives with key results (metric, current, target), owners, statuses. If the user supplies real OKRs, use them verbatim. If not, generate exactly **3 objectives × 3 KRs each**, plausible for the user's domain (e.g., for an ad-tech engineering team: POC delivery, platform reliability, model quality — not generic "increase synergy").
+2. **Extract from the brief**: quarter label, date range, team name, objectives with key results (metric, current, target), owners, statuses. If the user supplies real OKRs, use them verbatim. If they supply fewer than 3 objectives (or KRs per objective), keep theirs verbatim and synthesize the missing ones to reach 3 × 3, marking synthesized entries plausibly for their domain. If none are supplied, generate exactly **3 objectives × 3 KRs each**, plausible for the user's domain (e.g., for an ad-tech engineering team: POC delivery, platform reliability, model quality — not generic "increase synergy").
 3. **Lay out:**
-   - Quarter banner (full width): quarter + fiscal label, date range, team name, one overall-progress chip (weighted mean of KR completion, e.g., "62% through Q3").
+   - Quarter banner (full width): quarter + fiscal label, date range, team name, one overall-progress chip (mean of all KR completion percentages, capped at 100 — e.g., "62% through Q3").
    - Left column — three objective cards, each with:
      - Objective title, owner chip (initials avatar), status pill: On track / At risk / Off track using DS semantic colors (green/warn/danger tokens — never invented hues).
      - 3 KR rows: KR text | `current → target` | progress bar with % label. Bar fill = DS accent for the single most important KR per card; neutral token for the rest.
@@ -68,7 +68,7 @@ OKRs — CTO Office · Q3 FY26 (Jul 1 – Sep 30) · [62% through Q3]
 │    KR1 Dashboard in weekly staff review  3/6 wks → 6   ▓▓▓▓░░ 50%  (accent)
 │    KR2 Databricks refresh < 15 min      42 → 15 min   ▓▓▓░░░ 45%
 │    KR3 Vendor-replacement POC signed    1 → 1 sign-off ▓▓▓▓▓▓ 100%
-├─ O2: Bridge UI v2 foundation             Priya [At risk]
+├─ O2: Platform UI v2 foundation             Priya [At risk]
 │    KR1 v2 rework plan approved          0 → 1         ░░░░░░ 0%
 │    KR2 Reporting skill adoption         4 → 12 users  ▓▓░░░░ 33%
 │    KR3 7 PRDs reviewed + prioritized    5 → 7         ▓▓▓▓░░ 71%
@@ -76,7 +76,7 @@ OKRs — CTO Office · Q3 FY26 (Jul 1 – Sep 30) · [62% through Q3]
 │    KR1 IAB tier-1 accuracy              78 → 90%      ▓▓▓▓░░ 65%
 │    ...
 └─ Sidebar: At a glance (3 stats) · Top movers (KR3-O1, KR3-O2) ·
-   Blockers: "UMS data contract unowned — blocks O2/KR1"
+   Blockers: "upstream data contract unowned — blocks O2/KR1"
 ```
 
 ## Failure modes
@@ -87,4 +87,4 @@ OKRs — CTO Office · Q3 FY26 (Jul 1 – Sep 30) · [62% through Q3]
 | User supplies 5+ objectives | Real OKR doc is bigger | Render top 3 by stated priority; list the rest as one sidebar line. State the cut in the pre-artifact sentence. |
 | No current/target numbers | Vague KRs ("improve quality") | Invent plausible baseline → target; mark status conservatively (At risk, not On track). |
 | DS lacks semantic green/red | Minimal palettes | Encode status in the pill LABEL + neutral tone weight; never invent off-palette colors. |
-| Progress adds to >100% | Bad weighting math | Overall chip = simple mean of KR percentages, capped at 100. |
+| Progress adds to >100% | Bad weighting math | Overall chip = mean of all KR completion percentages, capped at 100 (same formula as the quarter banner). |

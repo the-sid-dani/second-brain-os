@@ -70,16 +70,16 @@ find memory -type f -iname "*<query>*" 2>/dev/null
 ```
 
 ```bash
-# Content match — prefer ripgrep (fast), fall back to grep -r
+# Content match — literal (fixed-string) search; prefer ripgrep, fall back to grep -r
 if command -v rg >/dev/null 2>&1; then
-  rg -l -i --type md "<query>" \
+  rg -l -i -F --type md "<query>" \
     "<workspace.root>/<workspace.resources>" \
     "<workspace.root>/<workspace.projects>" \
     "<workspace.root>/<workspace.archive>" \
     "<workspace.root>/<workspace.areas>" \
     memory 2>/dev/null
 else
-  grep -r -l -i --include="*.md" "<query>" \
+  grep -r -l -i -F --include="*.md" "<query>" \
     "<workspace.root>/<workspace.resources>" \
     "<workspace.root>/<workspace.projects>" \
     "<workspace.root>/<workspace.archive>" \

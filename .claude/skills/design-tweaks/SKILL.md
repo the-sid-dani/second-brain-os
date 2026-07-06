@@ -43,7 +43,7 @@ If multiple candidates exist, ask which one. Never guess, never edit two.
 1. **Restate the change list** in one line ("Changing: hero → dark, accent → 1 use, slide 5 stat → 38×"). If any requested change is ambiguous, ask before editing — a wrong surgical edit costs a full round-trip.
 2. **Edit minimally.** Touch only the CSS rules / elements the change requires. Preserve everything else byte-for-byte: nav scripts, `data-od-id` / `data-screen-label` attributes, `:root` token structure, the accent budget.
 3. **Stay inside the design system.** New colors must be DESIGN.md tokens (root `DESIGN.md`) or `color-mix()` of existing tokens. If the user asks for an off-system color, say so and offer the nearest token — apply the literal request only if they insist.
-4. **Guard the invariants** of the source skill: deck theme-rhythm rules, accent ≤ 2 per screen, serif display font, no `scrollIntoView()`, no external requests. If a requested change breaks one, flag it in your one pre-artifact sentence and do it anyway if the user already confirmed.
+4. **Guard the invariants** of the source skill: deck theme-rhythm rules, accent ≤ 2 per screen, serif display font, no `scrollIntoView()`, no external requests. If a requested change breaks one, stop and say which invariant it breaks — offer to re-scope the change or route to the right generator. Proceed only if the user then explicitly accepts the invariant violation; safety-relevant invariants (no external requests, nav-script integrity) are never overridable.
 5. **Re-emit the FULL artifact with the SAME identifier** so it replaces the original in place.
 
 ## Mode B — Tweak panel

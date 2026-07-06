@@ -29,12 +29,20 @@ When your step is done:
 
 1. Update `.delegate/{slug}/task.json`:
    - Set your step's `status` to "completed" or "failed"
-   - Set your step's `output`. If your prompt specifies a shape, use that shape exactly. If it doesn't, use this default:
+   - Set your step's `output`. If your prompt specifies a shape, use that shape exactly. If it doesn't, use this default for a **completed** step:
      ```json
      {
        "summary": "one sentence — what changed",
        "files_touched": ["relative/path.py"],
        "verification": "command run + result, or 'none'"
+     }
+     ```
+     For a **failed** step, use this shape instead — `reason` is required:
+     ```json
+     {
+       "reason": "why the step could not be completed",
+       "summary": "what was attempted before failing",
+       "files_touched": ["any files partially modified, or []"]
      }
      ```
    - Append anything out-of-scope you found to the step's `discovered_issues` array (empty array if none)

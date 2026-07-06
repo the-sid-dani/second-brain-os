@@ -70,8 +70,8 @@ Docs — Reports API · Creating a Scheduled Report
 │    H1 "Creating a scheduled report" + lede
 │    H2 Prerequisites — API key note callout
 │    H2 Create the report
-│       $ curl -X POST https://api.acme.com/v2/reports \
-│           -H "Authorization: Bearer $ACME_API_KEY" ...
+│       $ curl -X POST https://api.example.com/v2/reports \
+│           -H "Authorization: Bearer $EXAMPLE_API_KEY" ...
 │       12-line JSON request body snippet (mono token, copy affordance)
 │    H2 Parameters — table: name | type | required | description (6 rows:
 │       campaign_id, date_range, dma_split, frequency_caps, …)
@@ -88,4 +88,4 @@ Docs — Reports API · Creating a Scheduled Report
 | No topic given | Bare "make a docs page" | Pick a topic from the user's active-project context; name the choice in the pre-artifact sentence. |
 | DS has no mono token | Sparse design system | Use a system mono stack (`ui-monospace, SFMono-Regular, Menlo`) — stack fallback, not a CDN font. |
 | Prose balloons past ~900 words | Over-generation | Cap at ~600 words; docs mockups demonstrate structure, not exhaustive coverage. |
-| Dark cinematic DS | Long-form code/prose on pure black | Use the DS's lifted dark surface or light editorial panel for the article column; reserve pure black for the rails. |
+| Dark cinematic DS | Long-form code/prose on pure black | Use the DS's lifted dark surface or light editorial panel for the article column; keep the rails on DS-approved dark surface tokens — never pure black (root DESIGN.md rule). |

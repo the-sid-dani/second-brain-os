@@ -45,7 +45,7 @@ Do NOT trigger for:
    | Pitch deck (15 min) | 8–10 |
    | Investor update / longer talk (20–30 min) | 12–18 |
 
-   Write the rhythm as a numbered sketch (see Example below) and **show it to the user before writing slide HTML** — they redirect cheaply at this stage. A healthy sequence: no 3+ same theme in a row; ≥ 1 `hero dark` AND ≥ 1 `hero light` for 8+ slides; a dark "breath" every 3–4 slides.
+   Write the rhythm as a numbered sketch (see Example below) and **present it to the user in its own planning turn — no artifact yet — and wait for their go-ahead before writing slide HTML** (they redirect cheaply at this stage; the one-sentence-then-artifact output contract applies to the later emission turn, not this planning turn). A healthy sequence: no 3+ same theme in a row; ≥ 1 `hero dark` AND ≥ 1 `hero light` for 8+ slides; a dark "breath" every 3–4 slides.
 4. **Paste and fill.** For each planned slide, copy the matching `<section>` from `layouts.md` into the body. Replace bracketed text with real, specific copy from the brief — no filler, no lorem, no invented metrics. If a slide feels empty, the layout is wrong; pick another. Tag every slide `data-screen-label="01 Cover"`, `"02 Problem"`, … in order (the seed's first slides show the pattern).
 5. **Self-check.** Run `references/checklist.md`. The rhythm spot-check at the end is non-negotiable:
 

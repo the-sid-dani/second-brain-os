@@ -71,7 +71,7 @@ Evidence: one unexpected layout/typographic/motion move that *serves* the direct
 
 ## Process
 
-1. **Acquire the artifact.** Three modes: (a) project file the user names — Read it; (b) HTML pasted in chat; (c) an artifact you emitted earlier in this conversation — re-read your own output. If multiple HTML files exist, ask which one — never review all. Never review your own artifact unprompted in the same turn it was generated.
+1. **Acquire the artifact.** Three modes: (a) project file the user names — Read it; (b) HTML pasted in chat; (c) an artifact you emitted earlier in this conversation — re-read your own output. If the user explicitly asks to compare variants, load the named pair and run the full 5-dimension pass on each (per the compare row in Failure modes); otherwise, if multiple HTML files exist, ask which single file to review. Never review your own artifact unprompted in the same turn it was generated.
 2. **Read enough to score.** The entire `<style>` block, then 6–8 representative content blocks. Never score from frontmatter or declared intent — the score is about *executed* design.
 3. **Score all 5 dimensions.** For each: score, band, and a 30–80 word evidence paragraph naming specific elements — class names, slide labels (`data-screen-label`), section ids (`data-od-id`), line numbers when reviewing a file.
 4. **Build the action lists** from the evidence:
