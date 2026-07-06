@@ -1,229 +1,140 @@
 ---
 name: design-critique
-description: 'Run a 5-dimension expert design review on any HTML artifact in the project — Philosophy / Visual hierarchy / Detail / Functionality / Innovation, each scored 0–10. Outputs a single self-contained HTML report with a radar chart, evidence-backed scores, and three lists: Keep / Fix / Quick-wins. Use when the brief asks for a "design review", "design critique", "5 维度评审", "design audit", or "what''s wrong with my design".'
+description: 'Runs a 5-dimension expert design review on an EXISTING HTML artifact — Philosophy consistency / Visual hierarchy / Detail execution / Functionality / Innovation, each scored 0–10 with cited evidence — and returns a WRITTEN markdown critique in chat (verdict, score table, per-dimension evidence, Keep / Fix / Quick-wins lists). No HTML artifact is produced; this skill judges, it does not change anything. Use when the brief asks for a "design review", "design critique", "design audit", "what is wrong with my design", "is this deck any good", "compare these two variants". Do NOT trigger when the user wants changes APPLIED (design-tweaks — user wants edits, output is a modified artifact), when generating something new (the design-* generators), or for code review of app logic (engineering:code-review). Rule of thumb: user wants an OPINION → this skill; user wants CHANGES → design-tweaks.'
 ---
 
-# Critique Skill · 5 维度专家评审
+# design-critique
 
-Produce a single-file HTML "design review report" that scores any
-artifact across 5 dimensions and proposes actionable fixes. Inspired by
-the *huashu-design* expert-critique flow.
+Score an existing artifact across 5 dimensions, with evidence, and say what to keep, fix, and quick-win. Output is written markdown — judgment, not modification.
+
+Scope boundary (mutually exclusive with `design-tweaks`):
+- **critique** — user wants *judgment*. Output: markdown critique in chat. No artifact.
+- **tweaks** — user wants *changes*. Output: modified HTML artifact. If the user says "now fix it" after a critique, hand the Fix list to `design-tweaks`.
 
 ## When to use
 
-- After the agent (or user) generates an artifact (deck / prototype /
-  landing page) and the user asks "what's wrong with this?" or
-  "review this"
-- As a self-check loop the agent can run on its own output **before**
-  emitting it
-- For comparing two variants of the same design
+- "review the deck you made" / "what's wrong with this design" / "design audit"
+- "is this landing page any good" / "which of these two variants is stronger"
+- As a self-check the agent runs on its own output — **only on explicit request** ("now critique what you just made"), never unprompted in the same turn.
 
-## What you produce
-
-A single self-contained `<artifact type="text/html">` review report
-including:
-
-1. **Header** — what artifact was reviewed, date, reviewer ("OD ·
-   Critique skill"), 1-line verdict
-2. **Radar chart** (inline SVG, no library) showing the 5 scores
-3. **Five dimension cards**, each with:
-   - Score 0–10 (with band: 0–4 *Broken* · 5–6 *Functional* · 7–8 *Strong*
-     · 9–10 *Exceptional*)
-   - 1-paragraph evidence (cite specific elements / files / lines)
-   - One Keep / Fix / Quick-win bullet
-4. **Combined action lists** at the bottom:
-   - **Keep** — what's working, don't touch
-   - **Fix** — P0 / P1 issues that are visually expensive
-   - **Quick wins** — 5–15 minute tweaks with disproportionate impact
+Do NOT trigger for:
+- "make the hero darker" or any applied change — `design-tweaks`.
+- Generating a page/deck — the design-* generators.
+- Reviewing application code — `engineering:code-review`.
 
 ## The 5 dimensions
 
-> Each dimension is independent — a deck can be 9/10 on Innovation but
-> 4/10 on Hierarchy and the report should say so plainly. Don't average
-> away interesting failures.
+Each dimension is independent — a deck can be 9/10 on Innovation and 4/10 on Hierarchy, and the critique should say so plainly. Don't average away interesting failures. Bands: 0–4 *Broken* · 5–6 *Functional* · 7–8 *Strong* · 9–10 *Exceptional*.
 
-### 1. Philosophy consistency · 哲学一致性
+### 1. Philosophy consistency
 
-> Does the artifact pick a clear *direction* and stick to it through
-> every micro-decision (chrome / kicker / spacing / accent)?
+Does the artifact pick one clear direction and hold it through every micro-decision (chrome, kicker, spacing, accent)?
 
-**Evidence to look for:**
-- Is there one declared design direction (e.g. Monocle / WIRED /
-  Kinfolk) or is it three styles in a trench coat?
-- Does the chrome / kicker vocabulary stay in one register, or does
-  page 3 say "Vol.04 · Spring" and page 7 say "BUT WAIT 🔥"?
-- Are accent / serif / mono used by the same rule throughout?
+Evidence to look for: one declared direction vs three styles in a trench coat; kicker vocabulary staying in one register (not "Vol.04 · Spring" on page 3 and "BUT WAIT 🔥" on page 7); accent / serif / mono used by the same rule throughout.
+**0–4** styles fighting each other · **5–6** one direction, half the elements drift · **7–8** coherent, edge-page drift · **9–10** every element argues the same thesis.
 
-**0–4** Three styles fighting each other. **5–6** One direction but
-half the elements drift. **7–8** Coherent, occasional drift on edge
-pages. **9–10** Every element argues for the same thesis.
+### 2. Visual hierarchy
 
-### 2. Visual hierarchy · 视觉层级
+Can a stranger tell what to read first, second, third — without being told?
 
-> Can a stranger figure out what to read first, second, third — without
-> being told?
+Evidence: largest type is the most important thing on each screen; mono/serif/sans roles match information roles (meta/body/display); clear primary → secondary → tertiary tiers vs everything shouting.
+**0–4** everything shouts · **5–6** works on hero screens, breaks in body · **7–8** clear tiers, occasional collision · **9–10** zero friction.
 
-**Evidence to look for:**
-- Is the largest type clearly the most important thing on each page?
-- Do mono / serif / sans roles match the information's *role* (meta /
-  body / display)?
-- Lots of "loud" elements competing? Or a clear primary + secondary +
-  tertiary tier?
+### 3. Detail execution
 
-**0–4** Everything shouts. **5–6** Hierarchy works on hero pages but
-breaks on body. **7–8** Clear tiers, occasional collision. **9–10** Eye
-moves with zero friction.
+The 90/10 stuff — alignment, leading, baseline behavior of big numbers, image framing, chrome polish, edge-case spacing.
 
-### 3. Detail execution · 细节执行
+Evidence: big stats sitting on a baseline vs floating; column tops aligned in split grids; caption typography consistent across pages; mono labels sharing letter-spacing and uppercase rules; orphaned `<br>` making 1-character lines.
+**0–4** visible tape and string · **5–6** mostly clean, 1–2 ragged pages · **7–8** polished, expert finds 2–3 misses · **9–10** magazine-grade.
 
-> The 90/10 stuff — alignment, leading, kerning at large sizes, image
-> framing, foot/chrome polish, edge-case spacing.
+### 4. Functionality
 
-**Evidence to look for:**
-- Big-stat pages: does the number sit on a baseline, or float?
-- Left/right column tops aligned in `grid-2-7-5`?
-- `frame-img` + caption proportions consistent across pages?
-- Mono labels: same letter-spacing? same uppercase rule?
-- Any orphaned `<br>` causing 1-character lines?
+Does the artifact *work* for its intended use?
 
-**0–4** Visible tape and string. **5–6** Most pages clean, 1–2
-ragged. **7–8** Polished, expert eye finds 2–3 misses. **9–10**
-Magazine-grade — the kind of detail that makes printed-by-hand
-typographers nod.
+Evidence: deck — keyboard/wheel/touch nav intact, iframe-safe (no `scrollIntoView`); landing — CTA above the fold, mobile reflow, no horizontal scroll; docs — code blocks copyable, no smart quotes; presentation-distance readability.
+**0–4** pretty but doesn't do its job · **5–6** core flow works, edges broken · **7–8** robust in normal use · **9–10** defensively engineered (iframe / fullscreen / paste / print).
 
-### 4. Functionality · 功能性
+### 5. Innovation
 
-> Does the artifact *work* for its intended use? Click targets, nav,
-> readability at presentation distance, copy-paste-ability for code
-> blocks, mobile fallback if relevant.
+Does it push past the median — one element that makes people lean in?
 
-**Evidence to look for:**
-- Deck: keyboard / wheel / touch nav all working? Iframe scroll
-  fallback?
-- Landing: CTA above the fold? Phone number tappable on mobile?
-- Runbook: code blocks copyable, mono font, no smart quotes?
-- Critical info readable from 4m away (large screen presentation)?
+Evidence: one unexpected layout/typographic/motion move that *serves* the direction, vs 100% safe agency-median, vs innovation grafted on (random WebGL on a slow-living editorial).
+**0–4** generic AI-slop median · **5–6** competent and unmemorable · **7–8** one memorable moment · **9–10** multiple steal-worthy moves, each earning its place.
 
-**0–4** Visually fine but doesn't accomplish its job. **5–6** Core
-flow works, edge cases broken. **7–8** Robust through normal use.
-**9–10** Defensively engineered — handles iframe / fullscreen / paste
-/ print without flinching.
+## Scoring discipline (read before scoring)
 
-### 5. Innovation · 创新性
+- **Every score cites evidence** — "4 because the hero mixes the display serif and Inter on one line" beats "feels inconsistent". A number without a named element/class/slide is not a score.
+- **Don't average up** — the score is the *worst sustained band*. If page 3 breaks hierarchy, hierarchy is not a 7 because pages 1–2 are fine.
+- **Don't grade-inflate** — 7 means *strong*, not *acceptable*. If every score is 7+, you are not reviewing critically; a mean above 8 is suspicious.
+- **Innovation is allowed to be low** — 5/10 is fine for production deliverables. Don't punish appropriate conservatism.
+- **Judge against the artifact's own DESIGN.md** (root `DESIGN.md`) where token discipline is in question — off-brand hex values are a Philosophy/Detail finding.
 
-> Does this push past the median? Is there one element that makes
-> people lean in?
+## Process
 
-**Evidence to look for:**
-- One *unexpected* layout / motion / typographic move that wasn't
-  required?
-- Or 100% safe — could be any deck/landing from any agency?
-- Is the innovation *earned* (matches direction) or grafted on
-  (random WebGL on a Kinfolk slow-living deck)?
+1. **Acquire the artifact.** Three modes: (a) project file the user names — Read it; (b) HTML pasted in chat; (c) an artifact you emitted earlier in this conversation — re-read your own output. If multiple HTML files exist, ask which one — never review all. Never review your own artifact unprompted in the same turn it was generated.
+2. **Read enough to score.** The entire `<style>` block, then 6–8 representative content blocks. Never score from frontmatter or declared intent — the score is about *executed* design.
+3. **Score all 5 dimensions.** For each: score, band, and a 30–80 word evidence paragraph naming specific elements — class names, slide labels (`data-screen-label`), section ids (`data-od-id`), line numbers when reviewing a file.
+4. **Build the action lists** from the evidence:
+   - **Keep** (3–5 bullets) — working things the next iteration must not break. Cite by class/page/element.
+   - **Fix** (3–6 bullets) — must-dos ordered by visual cost saved per minute spent. ≤ 1 sentence each.
+   - **Quick wins** (3–5 bullets) — 5–15 minute tweaks with disproportionate impact.
+5. **Write the critique in chat** using the exact format below. Do not emit an `<artifact>`. Do not modify the reviewed file. If the user wants a saved copy, offer `<workspace.root>/<workspace.inbox>/` — never write into `<workspace.projects>/` without asking.
+6. **Offer the handoff:** end with one line — "Want the Fix list applied? Say so and I'll run it through `design-tweaks`."
 
-**0–4** Generic AI-slop median. **5–6** Competent and unmemorable.
-**7–8** One memorable moment, the rest solid. **9–10** Multiple
-moves you'd steal — but each one obviously serves the thesis.
+## Output format (exact)
 
-## Scoring discipline (read before you score)
+```markdown
+## Design critique · <artifact name> · <YYYY-MM-DD>
 
-- **Always cite evidence** — "scored 4 because hero page mixes
-  Playfair display with Inter sans on the same line" beats "feels
-  inconsistent". Numbers without evidence get rejected.
-- **Don't average up** — if Hierarchy is 5 because page 3 is broken,
-  don't bump to 7 because pages 1 and 2 are fine. The score is the
-  *worst sustained band*.
-- **Don't grade-inflate** — a 7 means *strong*, not *acceptable*. If
-  every score is 7+, you're not reviewing critically.
-- **Innovation is allowed to be low** — 5/10 is fine for production
-  deliverables. Don't punish *appropriate* conservatism.
+**Verdict:** <one sentence — the single most important thing about this design>
 
-## Workflow
+| Dimension | Score | Band |
+|---|---|---|
+| Philosophy consistency | n/10 | <band> |
+| Visual hierarchy | n/10 | <band> |
+| Detail execution | n/10 | <band> |
+| Functionality | n/10 | <band> |
+| Innovation | n/10 | <band> |
 
-### Step 1 — Acquire the artifact
+### 1. Philosophy consistency — n/10
+<30–80 word evidence paragraph naming specific elements.>
+… (repeat for all 5 dimensions — partial reviews are not allowed)
 
-Three modes:
+### Keep
+- <3–5 bullets, each citing class/page/element>
 
-1. **Project file** — user said "review the index.html I just made":
-   open it from the project folder.
-2. **Pasted HTML** — user pasted code in the chat: read it from the
-   message.
-3. **Generated by you in this turn** — you just emitted an artifact
-   above and want to self-critique: re-read your own `<artifact>`.
+### Fix
+- <3–6 bullets, ordered by visual cost saved per minute spent>
 
-If multiple HTML files exist, ask which one (don't review all).
+### Quick wins
+- <3–5 bullets, 5–15 min each>
 
-### Step 2 — Read enough to score
-
-Skim the entire `<style>`, then read 6–8 representative content
-blocks. **Do not score from frontmatter alone.** The score depends on
-*executed* design, not declared intent.
-
-### Step 3 — Score with evidence
-
-For each of the 5 dimensions, write the score and a 30–80 word
-evidence paragraph that names specific elements. Use line numbers,
-class names, page numbers.
-
-Example:
-```
-Dimension: Detail execution
-Score: 6 / 10
-Evidence: Stat-cards on page 3 align cleanly (grid-6, 3×2), but on
-page 8 the right column foot sits 2vh higher than the left because
-.callout has 3vh top margin while the figure doesn't. Image captions
-use mono on page 5 but sans on page 7 — pick one.
+Want the Fix list applied? Say so and I'll run it through `design-tweaks`.
 ```
 
-### Step 4 — Build the action lists
+## Example — one great dimension block
 
-Aggregate the 5 evidence paragraphs into:
+```markdown
+### 3. Detail execution — 6/10 (Functional)
+Stat cards on slide 03 align cleanly (grid-6, 3×2), but slide 08's right
+column foot sits ~2vh higher than the left because `.callout` carries a
+3vh top margin the figure lacks. Image captions are mono on slide 05 and
+sans on slide 07 — pick one. The `38×` stat floats above its baseline;
+`line-height: 0.9` on `.stat-num` would seat it.
 
-- **Keep** (3–5 bullets) — concrete things working that the user must
-  not break in the next iteration. Cite by class / page / element.
-- **Fix** (3–6 bullets) — must-do, ordered by *visual cost saved per
-  minute spent*. Each bullet ≤ 1 sentence.
-- **Quick wins** (3–5 bullets) — 5–15 minutes each, high
-  signal-to-noise (e.g. "swap `display:flex` for `grid` on page 4 to
-  fix the column drift").
-
-### Step 5 — Emit the report HTML
-
-Build a single file:
-
-- Header: artifact name + reviewer credit + date
-- Big radar chart (SVG)
-- 5 dimension cards in a 1-column or 2-column grid
-- Three action lists at the bottom with checkbox affordance
-
-Use the active DESIGN.md tokens if one exists; otherwise default to a
-neutral light theme (off-white background, near-black text, one accent
-for radar fill).
-
-## Output contract
-
-```
-<artifact identifier="critique-<artifact-slug>" type="text/html" title="Critique · <Artifact Title>">
-<!doctype html>
-<html>...</html>
-</artifact>
+### Fix (excerpt)
+- Slide 08: remove `.callout`'s 3vh top margin or mirror it on the figure.
+- Unify caption typography — mono everywhere (matches `.meta`).
 ```
 
-One sentence before the artifact ("Reviewed X across 5 dimensions, see
-report below.") and **stop after `</artifact>`** — do not paraphrase
-the report in chat; the user will read the artifact.
+## Failure modes
 
-## Hard rules
-
-- **5 scores, every time** — partial reports (e.g. only 3 dimensions)
-  are not allowed.
-- **Evidence per score** — no "feels off" / "needs work". If you
-  can't cite an element, the score is not justified.
-- **Don't grade-inflate** — overall mean above 8 is suspicious; check
-  yourself.
-- **Don't review your own artifact in the same turn** — the user
-  needs to see it first. Self-critique only on explicit request
-  ("now critique what you just made").
-- **Single-file HTML only** — no external CSS/JS. Inline everything.
-- **Radar chart is mandatory** — gives the report a recognizable
-  silhouette and lets the user spot weak axes at a glance.
+| Symptom | Fix |
+|---------|-----|
+| No artifact to review | Nothing to judge — ask for the file, or route a generation request to a design-* generator |
+| Multiple HTML files in scope | Ask which one; never review all |
+| User actually wants changes made | Hand off to `design-tweaks` |
+| Tempted to score from the skill/DESIGN.md intent | Read the executed HTML/CSS — intent doesn't score |
+| All five scores landed 7+ | Re-read with a harsher eye; the mean-above-8 rule caught you |
+| Asked to self-critique in the same turn as generation | Decline until the user has seen the artifact; explicit request only |
+| Comparing two variants | Run the full 5-dimension pass on each, then a short head-to-head table — never a single blended review |
