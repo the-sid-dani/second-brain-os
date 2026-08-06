@@ -3,7 +3,6 @@ name: briefing
 description: >-
   Morning chief-of-staff briefing — composes available signal sources (email, calendar, messaging, issue-tracking, code-hosting) plus local sources (contacts, active projects, USER.md priorities) into one self-contained HTML brief at `<workspace.root>/<workspace.resources>/briefings/morning-briefing-YYYY-MM-DD.html`. Detects tool availability at runtime in Step 0.5 + auth-health probes each detected tool in Step 0.6, surfacing failures via AskUserQuestion BEFORE composing (so a dead Slack token doesn't get discovered after the brief is written). Fork users with zero MCPs still get a useful brief from local state. Use when <user.name> asks to start the day or surface what needs attention — phrases like "/briefing", "brief me", "what's on my plate today", "what should I work on today". Trigger broadly on day-orientation language. Filters `status: personal` contacts; never auto-sends; never fabricates absent signals; **Slack sweep MUST cover all four channel types — `public_channel`, `private_channel`, `im`, AND `mpim` (group DMs) — narrowing channel_types to a subset has historically hidden high-signal multi-person threads; HTML must be Gmail-safe (no grid/sticky/vh/sidebar) since the brief gets pasted into email** (see SKILL.md body for invariants T1-T6).
 allowed-tools: Read(*) Write(*) Glob(*) Bash(*) AskUserQuestion Skill(*) mcp__slack__slack_search_public_and_private mcp__slack__slack_search_channels mcp__atlassian__searchJiraIssuesUsingJql
-disable-model-invocation: true
 ---
 
 # briefing
@@ -25,7 +24,7 @@ The chief-of-staff morning brief. Probes which signal sources are available, com
 
 The novel piece is the **project synthesis layer**: reading each active project's `memory.md` tail and `CLAUDE.md` status to recommend today's highest-leverage work. That layer is mandatory-floor — works whether <user.name> has a fully-configured multi-MCP stack or no MCPs at all.
 
-This is the Pass 3 headliner of the second-brain project. After this ships, `/meeting-prep` (item 17), `/standup` (item 18), and `/weekly-digest` (item 19) become wrappers around the same probe-then-compose pattern.
+This is the broad probe-then-compose briefing surface. The same sources may be narrowed into focused meeting-prep, standup, or weekly-recap modes without depending on separate wrapper skills.
 
 ## When to use
 
@@ -40,9 +39,9 @@ Trigger phrases (broad — day-orientation is the pattern, not the literal comma
 - "morning <assistant.name>" / "good morning" — reactive opener to a new session
 
 Do NOT trigger for:
-- Per-meeting prep — that's `/meeting-prep` (item 17, separate skill).
-- Weekly recap — that's `/weekly-digest` (item 19).
-- Standup-only output — that's `/standup` (item 18). `/briefing` is broader (includes Slack, Jira, calendar, etc.); `/standup` is project-memory-focused only.
+- A focused meeting-prep request — use this skill's calendar/contact/transcript probes for that meeting only and save under the configured meeting-prep resource folder.
+- A weekly recap — use the requested date window and summarize the same evidence sources; do not invent a missing wrapper.
+- A standup-only request — focus on active project memory, yesterday's journal, current blockers, and today's plan.
 - A literal question like "what is a briefing?" or "draft a briefing template" — that's content, not invocation.
 - Sending the brief somewhere — briefing writes a local file, never auto-sends. If <user.name> wants to share it, they say so explicitly.
 
@@ -482,11 +481,11 @@ See **`references/failure-modes.md`** — symptom → cause → fix for every kn
 - **Never auto-send.** Briefing is a draft that <user.name> reads. Sending to Slack/email/Jira requires explicit "send it" from <user.name> (per CLAUDE.md "Boundaries"). Drafts only.
 - **Never modify project files.** This skill READS `<workspace.projects>/*/CLAUDE.md` and `<workspace.projects>/*/memory.md` (via project-query.sh and tail) and `<workspace.resources>/contacts/*.md`. It does NOT write to either.
 - **Never auto-commit.** The briefing file is uncommitted by default; <user.name> commits it (or not — `<workspace.root>/<workspace.resources>/briefings/` may be `<user.name>`-curated).
-- **Never call Exa directly** (token-isolation rule). If a topic needs external research, suggest `/find` or `/contact-research`.
+- **Never call Exa directly** (token-isolation rule). If a topic needs external research, suggest `/find` for workspace content or `/entity-research` for a company/person.
 - **Never fabricate.** T3 invariant. Empty MCP → empty section or short note. Thin project memory → surface that fact, don't invent recommendations.
 - **Never mix personal-life content into work brief.** T2 invariant. `status: personal` contacts filtered at read time.
 - **Never assume a tool is present.** T4 invariant. Step 0.5 detects availability; Steps 1-6 gate on it. Absent tools omit silently from body, footer documents. Never invent a tool call to fill a section; never write a "⚠️ X not configured" line into the body.
 
 ## Output format reference
 
-The brief's stable DOM contract — fixed section order, `data-od-id` slugs, per-section gating behavior, and the "why HTML not Markdown" rationale — lives in **`references/output-format.md`**. Downstream tooling (`/standup`, `/weekly-digest`) parses by those slugs.
+The brief's stable DOM contract — fixed section order, `data-od-id` slugs, per-section gating behavior, and the "why HTML not Markdown" rationale — lives in **`references/output-format.md`**. Any downstream parser should use those slugs rather than presentation text.

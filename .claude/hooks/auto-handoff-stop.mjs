@@ -35,7 +35,7 @@ function main() {
   } else {
     console.log(JSON.stringify({
       decision: 'block',
-      reason: `Context at ${pct}%. Run: /create_handoff`,
+      reason: `Context at ${pct}%. Run: /handoff`,
     }));
   }
 }

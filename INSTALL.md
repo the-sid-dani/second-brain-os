@@ -18,8 +18,8 @@ This file documents the same steps as a manual walkthrough.
 
 As of v0.2.0 the installer has two tiers:
 
-- **Minimal (default).** Foundation toolchain (Homebrew, Node 20, git, jq, Claude Code) + `.env.example` + verify. ~3-5 min on a Mac with the foundation already present. Right choice for knowledge-worker forks (briefings, `/todo`, `/find`, design skills, briefing/meeting prep).
-- **Coding (`--with-coding`).** Adds Rust, uv, the CCv4 binaries (`bloks`, `tldr-cli`), CCv4 Python deps, and the FastEdit MCP. ~15 min extra. Required for `/research`, `/autonomous`, `/premortem`, and FastEdit-MCP-backed surgical AST edits.
+- **Minimal (default).** Foundation toolchain (Homebrew, Node 20, git, jq, Claude Code) + `.env.example` + verify. ~3-5 min on a Mac with the foundation already present. Right choice for knowledge-worker forks (briefings, `/find`, design skills, briefing/meeting prep).
+- **Coding (`--with-coding`).** Adds Rust, uv, the `bloks` + `tldr-cli` binaries, and the FastEdit MCP. ~15 min extra. Required for FastEdit-MCP-backed surgical AST edits and the tldr-read hook's structural summaries.
 
 The installer writes `SBOS_TIER=minimal|coding` to `~/.second-brain-os.env` so `/bootstrap` knows which tier you're on and adjusts its tool-probe panel accordingly.
 
@@ -238,11 +238,11 @@ Every key is **optional**. Add only the ones you need:
 |---|---|---|
 | `GEMINI_API_KEY` | gemini-vision MCP (image/PDF/video analysis) | https://aistudio.google.com/apikey (free 15 req/min) |
 | `FIRECRAWL_API_KEY` | firecrawl MCP (web scrape/crawl) | https://firecrawl.dev |
-| `ANTHROPIC_API_KEY` | Ouros sub-LLM calls (`/research`, `/autonomous`), FastEdit | https://console.anthropic.com |
+| `ANTHROPIC_API_KEY` | FastEdit merge model + SDK-based skill evals | https://console.anthropic.com |
 | `EXA_API_KEY` | `company-research` + `people-research` skills (Python bridge) | https://exa.ai |
-| `NIA_API_KEY` | NIA docs bridge (`/autonomous-research`) | https://trynia.ai |
+| `NIA_API_KEY` | NIA docs MCP | https://trynia.ai |
 | `HF_TOKEN` | FastEdit model pull if gated on Hugging Face | https://huggingface.co/settings/tokens |
-| `ATLASSIAN_BASIC_AUTH` | `/atlassian-attach` skill (file uploads) | https://id.atlassian.com/manage-profile/security/api-tokens |
+| `ATLASSIAN_BASIC_AUTH` | REST-direct Atlassian calls (file uploads) | https://id.atlassian.com/manage-profile/security/api-tokens |
 
 > **Important:** MCPs read keys from your **shell env**, not from `.env` — Claude Code launches its child processes without sourcing `.env`. For MCP keys (`GEMINI_API_KEY`, `FIRECRAWL_API_KEY`), also `export` them in `~/.zshrc`. For skill-only keys (Anthropic / Exa / NIA / Atlassian) `.env` works because the Python bridges read it directly.
 

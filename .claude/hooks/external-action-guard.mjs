@@ -166,8 +166,8 @@ function handleAtlassianWrite(toolName, toolInput) {
     `Target: ${identity}`,
     "",
     "This mutates live Atlassian state (Jira tickets / Confluence pages).",
-    "Load-bearing during `/scaffold-engineering-project` bulk-create runs —",
-    "a misconfigured spec can create dozens of unwanted tickets.",
+    "Bulk-create runs are the dangerous case — a misconfigured spec can",
+    "create dozens of unwanted tickets.",
     "",
     "Confirm only if you intend this exact mutation.",
   ].join("\n");

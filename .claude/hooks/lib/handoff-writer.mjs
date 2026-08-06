@@ -1,18 +1,11 @@
 // handoff-writer.mjs — single entry point for handoff file writes.
 //
 // Why this matters: structural enforcement of the `project_root:` invariant.
-// The handoff-at-workspace + state-at-project split that `/resume-handoff`
-// depends on lives or dies on every handoff carrying its origin in YAML
-// frontmatter. Two writers exist today (pre-compact.mjs + /create-handoff),
-// a third is likely future-state. Without a shared helper, the invariant
-// is a written rule that drifts the moment a new writer ships. Every
-// handoff goes through one code path. Don't bypass — extend.
-//
-// Spec: ccv4-port-plan.md Phase 4 / VAL-018. Locked 2026-05-11.
-// VAL-020/VAL-021 update 2026-05-11: accept optional `extra` field so callers
-// (pre-compact.mjs) can pass trigger/session metadata without emitting their
-// own competing frontmatter block. Single frontmatter == one parseable YAML
-// block, which is what /resume-handoff actually consumes.
+// Every handoff must carry its origin in YAML frontmatter so a fresh session
+// can locate the project it belongs to. All writers go through this one code
+// path — don't bypass, extend. The optional `extra` field lets callers
+// (pre-compact.mjs) pass trigger/session metadata without emitting a second,
+// competing frontmatter block; parsers only read the first YAML block.
 
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";

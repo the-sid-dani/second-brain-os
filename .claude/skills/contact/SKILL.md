@@ -1,7 +1,7 @@
 ---
 name: contact
 description: >-
-  Read-only display of a contact's profile from `<workspace.root>/<workspace.resources>/contacts/<slug>.md` — fuzzy-matches a name, then surfaces frontmatter summary, last interaction, open commitments (To/From split), About blurb, and Recurring topics. Use when the user asks <assistant.name> to recall who a person is or what context exists with them — phrases like "/contact <name>", "who is X?", "what's my context with Y?", "tell me about <name>". PRECEDENCE: `/contact` wins when the query target matches a file in contacts/; `/find` handles topic-keyed recall (research subjects, project topics). Fuzzy-match priority order (locked) lives in SKILL.md body. Read-only — for mutation use `/contact-log` or `/contact-add` (planned).
+  Read-only display of a contact's profile from `<workspace.root>/<workspace.resources>/contacts/<slug>.md` — fuzzy-matches a name, then surfaces frontmatter summary, last interaction, open commitments, About, and recurring topics. Use for "/contact <name>", "who is X?", "what's my context with Y?", or "tell me about <name>". PRECEDENCE: `/contact` wins when a contacts file matches; `/find` handles topics and `/entity-research` handles fresh public research. Use `/contact-log` for interactions; new-profile or field edits require a separately approved direct edit against the contacts schema.
 allowed-tools: Read Bash AskUserQuestion
 ---
 
@@ -13,7 +13,7 @@ Entity-keyed recall for people. Fuzzy-match a name across `<workspace.root>/<wor
 
 ## Why this exists
 
-Without `/contact`, recall about a person is a manual ritual: `ls workspace/4-Resources/contacts/`, guess the slug, `cat` the file. For Layer 3 skills (`/briefing`, `/meeting-prep`) the lookup is even more painful — they have to fuzzy-match names every time.
+Without `/contact`, recall about a person is a manual ritual: list the resolved contacts directory, guess the slug, and read the file. Focused briefing/meeting-prep flows would otherwise have to reimplement fuzzy matching every time.
 
 `/contact` is the entity-keyed recall primitive. It pairs with `/find` (topic-keyed). Together they cover both axes of "what do I know about X?" — where X is either a thing or a person.
 
@@ -33,7 +33,7 @@ Trigger phrases (broad — entity recall is the pattern, not the literal command
 Do NOT trigger for:
 - Topic-keyed recall (research, projects, meetings) — that's `/find`. Phrases like "do I have anything on <topic>", "what do I know about <topic>".
 - Specific known filename — Read it directly.
-- Mutation (logging an interaction, adding a contact, updating a field) — use `/contact-log`, `/contact-add`, or `/contact-update`. This skill is read-only.
+- Mutation — use `/contact-log` for interactions. Adding a profile or updating other fields requires a separately approved direct edit after reading the contacts README; this skill remains read-only.
 - A question explicitly typed as `/find <name>` — `<user.name>` is overriding precedence; honor it.
 
 ### Precedence vs `/find`
@@ -149,7 +149,7 @@ When no tier produces any match:
 No contact named "<query>" in <workspace.root>/<workspace.resources>/contacts/.
 
 Options:
-- Add them: /contact-add <query>   (coming soon — Pass 4 #35)
+- Add them: ask to create a contact from the canonical contacts README (requires explicit approval)
 - Topic search instead: /find <query>   (if "<query>" is a topic, not a person)
 - See all contacts: ls <workspace.root>/<workspace.resources>/contacts/
 ```
@@ -160,15 +160,15 @@ If the directory had any partial-stem matches that fell below substring threshol
 
 ### Step 8: Stop
 
-Read-only by design. Don't auto-update any index, don't auto-commit, don't propose unrelated next actions, don't modify the contact file. Mutation is `/contact-log` / `/contact-add` / `/contact-update`'s job.
+Read-only by design. Don't auto-update any index, auto-commit, propose unrelated next actions, or modify the contact file. `/contact-log` owns interaction appends; other mutations are explicit direct-edit tasks against the canonical schema.
 
 ## Boundary
 
 This skill is **read-only**. It MUST NOT:
 - Modify any file under `<workspace.root>/<workspace.resources>/contacts/`
 - Append entries to the Interaction log (that's `/contact-log`)
-- Scaffold new contact files (that's `/contact-add`)
-- Edit frontmatter fields (that's `/contact-update`)
+- Scaffold new contact files without a separate explicit request and a live read of the contacts schema
+- Edit frontmatter fields during a read-only lookup
 - Write to `memory/YYYY-MM-DD.md` (that's the user's daily log; this skill doesn't touch it)
 
 If the user asks for any of the above during the same turn, complete the read action first, then suggest the appropriate mutation skill — do not silently invoke it.
@@ -193,4 +193,4 @@ If the user asks for any of the above during the same turn, complete the read ac
 
 **No-match:** the fallback block from Step 7.
 
-These three formats are stable — Layer 3 skills (`/briefing`, `/meeting-prep`) will compose `/contact <name>` and parse the profile block (specifically the `Open commitments` lines and `Last interaction:` block) for inclusion in their own output.
+These three formats are stable — briefing and meeting-prep flows may compose `/contact <name>` and parse the `Open commitments` and `Last interaction` lines.

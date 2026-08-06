@@ -9,7 +9,7 @@
 #                          CCv4 Python deps, FastEdit MCP. 12 steps total.
 #
 # Knowledge-worker forks should run the default. Add --with-coding only if
-# you need /research, /autonomous, /premortem, or FastEdit-MCP-backed edits.
+# you need FastEdit-MCP-backed surgical edits or tldr structural reads.
 
 set -euo pipefail
 shopt -s inherit_errexit 2>/dev/null || true
@@ -78,8 +78,8 @@ Tiers:
   Default (no flag)     Foundation + jq + .env.example + verify. ~3-5 min on
                         a machine with the foundation present. Right choice for
                         knowledge-worker forks.
-  --with-coding         Adds Rust/uv/bloks/tldr/FastEdit. Required for /research,
-                        /autonomous, and FastEdit-MCP-backed code edits.
+  --with-coding         Adds Rust/uv/bloks/tldr/FastEdit. Required for
+                        FastEdit-MCP-backed code edits and tldr structural reads.
 
 This installer is idempotent — safe to re-run after partial completion or to apply updates.
 HELP
@@ -318,7 +318,7 @@ NEXT
 if [ "$INSTALL_CODING" != "1" ]; then
     cat <<'CODING_HINT'
 
-   💡 Want /research, /autonomous, or surgical FastEdit AST code edits?
+   💡 Want surgical FastEdit AST code edits and tldr structural reads?
       Re-run with:   ./scripts/install.sh --with-coding
       Adds Rust + uv + bloks + tldr + FastEdit MCP (~15 min extra).
       Knowledge-worker flows (briefings, /todo, /find) don't need it.

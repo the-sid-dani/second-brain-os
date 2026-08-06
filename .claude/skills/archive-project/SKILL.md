@@ -1,14 +1,13 @@
 ---
 name: archive-project
-disable-model-invocation: true
 description: >-
-  Moves a completed project from `<workspace.root>/<workspace.projects>/<slug>/` to `<workspace.root>/<workspace.archive>/<slug>/` and flips its frontmatter `status: active` → `status: done`. All paths come from the Configuration section in root CLAUDE.md — read those first. Use this whenever the user says they're done with a project, wants to wrap it up, or wants to clean up their active list — phrases like "archive the X project", "I'm done with X", "wrap up X", "move X to archive", "X is finished — clear it out", "shelve X for now". Optional one-paragraph retro gets appended to `memory.md` before the move so the decision context survives. Trigger even when the user doesn't say "archive" explicitly — finishing/wrapping/clearing language for a known project should invoke this skill rather than letting them `mv` by hand (which would skip the status flip and break `/prune-projects` later).
+  Moves a completed project WHOLE from `<workspace.root>/<workspace.projects>/<slug>/` to `<workspace.root>/<workspace.archive>/<slug>/`, flips its frontmatter `status: active` → `status: done`, and regenerates the parent Area's index.md (thin-Areas model — no artifact-promotion step). All paths come from the Configuration section in root CLAUDE.md — read those first. Use this whenever the user says they're done with a project, wants to wrap it up, or wants to clean up their active list — phrases like "archive the X project", "I'm done with X", "wrap up X", "move X to archive", "X is finished — clear it out", "shelve X for now". Optional one-paragraph retro gets appended to `memory.md` before the move so the decision context survives. Trigger even when the user doesn't say "archive" explicitly — finishing/wrapping/clearing language for a known project should invoke this skill rather than letting them `mv` by hand (which would skip the status flip and break `/prune-projects` later).
 allowed-tools: Read Edit Bash AskUserQuestion
 ---
 
 # archive-project
 
-Closes the loop on a project: appends a retrospective to `memory.md` (optional but encouraged), flips `status: active → done` in `CLAUDE.md`'s YAML frontmatter, then moves the whole folder to `<workspace.root>/<workspace.archive>/<slug>/`.
+Closes the loop on a project: appends a retrospective to `memory.md` (optional but encouraged), flips `status: active → done` in `CLAUDE.md`'s YAML frontmatter, moves the whole folder to `<workspace.root>/<workspace.archive>/<slug>/`, then regenerates the parent Area's `index.md`. The project moves WHOLE — there is no artifact-promotion step (thin-Areas model, 2026-07-10: Areas hold rules + memory + a generated index only; archived projects stay discoverable via the Area index).
 
 **Before you begin: read the Configuration section in root CLAUDE.md.** Path tokens like `<workspace.projects>` resolve to whatever's defined there — don't hardcode.
 
@@ -118,22 +117,34 @@ mv <workspace.root>/<workspace.projects>/<slug>/ <workspace.root>/<workspace.arc
 
 `mv` not `cp+rm` — atomic, preserves mtimes (which `/prune-projects` cares about for archived-recency stats later).
 
-### Step 8: Append HQ-audit line to today's daily memory log (if `parent_hq` set)
+### Step 8: Regenerate the parent Area's `index.md` (if `parent_hq` set)
 
-Before printing the confirm block, read the project's CLAUDE.md frontmatter for `parent_hq:`. If set (and not `none`), append one line to `memory/<YYYY-MM-DD>.md` to leave an audit trail in the HQ-aware daily log:
+Read the project's CLAUDE.md frontmatter for `parent_hq:`. If set (and not `none`), regenerate that Area's machine-generated `index.md` so the archived project stays linked from the Area (indexes cover `parent_hq`-matched projects in both `<workspace.projects>` and `<workspace.archive>`):
+
+```bash
+bash .claude/skills/reindex/reindex.sh "<workspace.root>/<workspace.areas>/<parent_hq>"
+```
+
+(The okf-index-regen PostToolUse hook covers live edits, but a folder `mv` doesn't fire it — run `/reindex` on the Area explicitly.) Never hand-edit the `index.md`.
+
+Skip if `parent_hq: none` or missing.
+
+### Step 9: Append HQ-audit line to today's daily memory log (if `parent_hq` set)
+
+Before printing the confirm block, if `parent_hq:` is set (and not `none`), append one line to `memory/<YYYY-MM-DD>.md` to leave an audit trail in the HQ-aware daily log:
 
 ```markdown
 
 ## <YYYY-MM-DD> — Archived <slug> (parent_hq: <name>)
 
-Project moved to archive. Tactical execution complete. Foundation/planning artifacts (if any) live in `2-Areas/<name>/`. Project memory.md preserved at archive location.
+Project moved to archive WHOLE (no promotion — thin-Areas model). Area index regenerated; archived project linked from `2-Areas/<name>/index.md`. Project memory.md preserved at archive location.
 ```
 
 Use `>>` append or Edit (file is append-only per CLAUDE.md rule — never rewrite). `parent_hq:` values are bare slugs (e.g. `ai-task-force`), so write the bare slug here too. This gives the HQ owner a discovery hook later (<assistant.name> can grep memory/ for "Archived ... parent_hq: <name>" to surface what's been wrapped under each HQ).
 
 Skip if `parent_hq: none` or missing — no audit trail needed for standalone projects (root memory.md / daily-log entry covers the move).
 
-### Step 9: Confirm
+### Step 10: Confirm
 
 Print:
 
@@ -143,6 +154,7 @@ Print:
   To:   <workspace.root>/<workspace.archive>/<slug>/
   Status: active → done
   Parent HQ: <hq-name | none>
+  Area index: <regenerated | skipped (no parent_hq)>
   Retro: <appended | skipped>
   HQ audit line: <added to memory/YYYY-MM-DD.md | skipped>
 ```

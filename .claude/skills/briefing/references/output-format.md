@@ -1,6 +1,6 @@
 # briefing — output format reference
 
-Loaded on demand. The stable DOM contract so downstream tooling (eventually `/standup`, `/weekly-digest`) can parse the brief deterministically via `data-od-id` slugs.
+Loaded on demand. The stable DOM contract lets downstream focused briefing/standup/weekly-recap flows parse the brief deterministically via `data-od-id` slugs.
 
 The brief is a single self-contained HTML file. Section order is FIXED:
 
@@ -26,6 +26,6 @@ The brief is a single self-contained HTML file. Section order is FIXED:
 - The footer (13) is the source of truth: if a `<section>` is present in the DOM, the footer should list it under ✅ Composed; if absent, it goes under ⏳ Not configured, ⏭️ Skipped (Step 0.6 user demoted), or ⚠️ Errored. The four buckets are mutually exclusive — each tool appears in exactly one.
 
 ## Why HTML, not Markdown (v0.2.0 decision)
-- <user.name> wanted a styled, scannable artifact he could open in a browser and (eventually) `/publish` for share. Dashboard mood beats prose for daily orientation.
+- <user.name> wanted a styled, scannable artifact he could open in a browser and (eventually) `/samba-publish-sites` for share. Dashboard mood beats prose for daily orientation.
 - Parsing tradeoff: downstream skills that previously grepped `## What needs you today` now query by `data-od-id="what-needs-you"` instead. DOM slugs are stable across cosmetic CSS changes; H2 text could drift with voice tweaks.
 - Self-contained constraint (no JS, no external assets) keeps briefings portable: opens offline, archivable, no link rot.

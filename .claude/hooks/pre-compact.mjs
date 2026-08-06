@@ -11,9 +11,8 @@
  * VAL-020 fix 2026-05-11: generateHandoff() returns BODY only — no
  * frontmatter. trigger/session metadata is passed to writeHandoff() via
  * `extra` so a single YAML block (date/type/trigger/session/project_root/
- * repo_root) is emitted. Two stacked frontmatter blocks broke
- * /resume-handoff (parser only reads the first; project_root was in the
- * second and got dropped).
+ * repo_root) is emitted — YAML parsers only read the first frontmatter
+ * block, so everything must live in one.
  */
 import { readFileSync, existsSync } from 'fs';
 import { writeHandoff } from './lib/handoff-writer.mjs';

@@ -8,8 +8,8 @@ The PARA-style work area for everything you do with `<assistant.name>` — proje
 <workspace.root>/
 ├── 0-Inbox/         # ad-hoc / not-yet-decided capture zone
 ├── 1-Projects/      # active projects (YYYY-MM-slug/ with CLAUDE.md + memory.md)
-├── 2-Areas/         # evergreen HQ workstations (empty on a fresh fork)
-├── 3-Coding/        # code repos (gitignored), flat — one folder per repo
+├── 2-Areas/         # evergreen HQs; may own ignored apps/<name>/ repos
+├── 3-Coding/        # legacy code repos (grandfathered; no new apps)
 ├── 4-Resources/     # reference layer: templates, meetings, reference, research,
 │                    # contacts, design-systems, briefings, meeting-prep,
 │                    # organization-reports
@@ -29,7 +29,8 @@ PARA is a personal-knowledge-management system invented by Tiago Forte — **P**
 | Capture a half-formed idea you might revisit | `0-Inbox/` |
 | Work on a time-bound deliverable | `1-Projects/<slug>/` |
 | Maintain an evergreen area of responsibility | `2-Areas/<name>/` (HQ workstation) |
-| Spin up a new code repo | `3-Coding/<name>/` |
+| Build an app owned by an Area | `2-Areas/<name>/apps/<app-name>/` |
+| Find a grandfathered code repo | `3-Coding/<name>/` |
 | File a meeting transcript | `4-Resources/meetings/` |
 | Read past briefings | `4-Resources/briefings/` |
 | Save research / reference docs | `4-Resources/research/` or `4-Resources/reference/` |

@@ -2,7 +2,6 @@
 name: contact-log
 description: Write-mode skill — append a new interaction entry to a matched contact's `## Interaction log` section in `<workspace.root>/<workspace.resources>/contacts/<slug>.md` and auto-bump the `last_interaction` frontmatter to today's date. Append-only via Edit (never Write — preserves prior entries + About / Recurring topics / Open commitments sections). Entry text wikilinks other known contacts/topics per the back-linking iron law (Step 4); materially-involved other contacts get a suggest-only propagation offer. Reuses `/contact`'s fuzzy-match priority order. Use when <user.name> wants to record an interaction — phrases like "/contact-log <name>", "log my meeting with X", "just talked to <name>", "record my call with X". Mutation, single-source, and no-fabrication invariants live in SKILL.md body.
 allowed-tools: Read Edit Bash AskUserQuestion Skill
-disable-model-invocation: true
 ---
 
 # contact-log
@@ -33,8 +32,7 @@ The verb is the signal. Read-mode verbs ("who is", "what's my context with", "re
 
 Do NOT trigger for:
 - Read-only recall of a person — that's `/contact`. Phrases like "who is X again?", "context on Y".
-- Scaffolding a brand-new contact (no file exists yet) — that's `/contact-add` (planned, Pass 4 #35).
-- Updating a frontmatter field other than `last_interaction` (e.g., correcting a role, changing status) — that's `/contact-update` (planned, Pass 4 #36).
+- Scaffolding a brand-new contact or editing other profile fields — handle as a separately approved direct edit after reading the canonical contacts README. This skill only appends interactions.
 - Writing to the daily log — `/contact-log` does NOT touch `memory/YYYY-MM-DD.md`. <user.name> writes the day's narrative to memory/ separately.
 
 ## Mutation invariants (load-bearing — DO NOT VIOLATE)
@@ -43,17 +41,17 @@ These are the premortem T2 + E1 mitigations baked into the skill spec. Violating
 
 - **Use `Edit` for the append. NEVER `Write`.** `Write` replaces the entire file content and would destroy prior interaction entries, About blurbs, Recurring topics, and Open commitments. This skill performs **two** `Edit` calls per invocation: one for the `last_interaction` frontmatter bump, one for the new `### YYYY-MM-DD — <topic>` block insertion.
 - **Stable insertion anchor.** Insert the new entry directly **below the `## Interaction log` heading** (so newest-first, easy to scan), or **after the last existing log entry** (so chronological, append-only). Pick whichever produces a more reliable Edit `old_string` on the actual file content. Default convention: **insert immediately under `## Interaction log` heading** so the most recent entry surfaces first when `/contact` reads.
-- **Only `last_interaction` mutates in frontmatter.** Every other field — `name`, `email`, `role`, `team`, `company`, `relationship`, `status`, `first_logged`, `legal_name`, `reports_to`, `recurring_cadence`, `tags`, `slack_handle`, `timezone`, `linkedin`, `location`, `department`, `division`, `work_phone` — stays byte-identical. If the user wants to update a non-`last_interaction` field, refer them to `/contact-update` (planned).
+- **Only `last_interaction` mutates in frontmatter.** Every other field — `name`, `email`, `role`, `team`, `company`, `relationship`, `status`, `first_logged`, `legal_name`, `reports_to`, `recurring_cadence`, `tags`, `slack_handle`, `timezone`, `linkedin`, `location`, `department`, `division`, `work_phone` — stays byte-identical. A different field change is a separate, explicitly approved task against the canonical schema.
 - **Body sections About / Recurring topics / Open commitments are READ-ONLY here.** Do not regenerate them. Do not "improve" them. Do not summarize prior interactions into them. Their content is byte-identical post-write.
 - **Prior `## Interaction log` entries are READ-ONLY.** Don't merge, don't summarize, don't reformat. The new entry is purely additive.
-- **Schema-violation guard.** If the contact file has no `## Interaction log` heading, abort with an error. Do NOT auto-create the section — that's a schema decision <user.name> should make explicitly. Suggest fixing the file or running `/contact-update` (planned) to repair the schema.
+- **Schema-violation guard.** If the contact file has no `## Interaction log` heading, abort with an error. Do NOT auto-create the section during logging; suggest a separately approved schema repair after reading the contacts README.
 
 ## Single-source rule (no daily-log write)
 
 Per premortem E1: this skill writes **ONLY** to the contact file at `<workspace.root>/<workspace.resources>/contacts/<slug>.md`. It does **NOT** also append to `memory/YYYY-MM-DD.md`.
 
 - Daily log = the day's narrative, written by <user.name> (and, with permission, by <assistant.name>).
-- Contact file = the per-person interaction journal, mutated only by this skill (and `/contact-add`, `/contact-update` when those ship).
+- Contact file = the per-person interaction journal; this skill owns interaction appends, while other direct edits require separate approval.
 - WikiLinks (`[[contacts/<slug>]]`) cross-reference between them so `/find` traces the relationship graph. If <user.name> wants today's daily log to mention the interaction, they write that themselves — don't auto-mirror it from here.
 
 This decision is locked. If a future skill needs both surfaces written together, it composes both — but the primitive each surface uses stays single-target.
@@ -78,7 +76,7 @@ Outcomes:
   No contact named "<query>" in <workspace.root>/<workspace.resources>/contacts/.
 
   Options:
-  - Add them: /contact-add <query>   (coming soon — Pass 4 #35)
+  - Add them: ask to create a profile from the canonical contacts schema (separate approval)
   - Check spelling: ls <workspace.root>/<workspace.resources>/contacts/
   ```
   Do NOT create a new file. Do NOT fabricate a profile. Stop.
@@ -152,7 +150,7 @@ The format mirrors `<workspace.root>/<workspace.resources>/contacts/README.md`'s
 
 - Another person who has a contact file (`ls <workspace.root>/<workspace.resources>/contacts/` to check) → write their mention as `[[contacts/<their-slug>]]`.
 - A project or durable topic that exists in the workspace → `[[<topic-slug>]]` per the WikiLinks convention (decision #19).
-- A mentioned person with NO contact file → leave the name as plain text. Do NOT scaffold a file for them (that's `/contact-add`), do NOT invent a wikilink target.
+- A mentioned person with NO contact file → leave the name as plain text. Do NOT scaffold a file during logging or invent a wikilink target.
 
 This costs one `ls` and makes every interaction entry traceable from the other side — `/find` (both arms) follows these links, and any future graph layer feeds on them. An entry that names Omar without `[[contacts/omar-zennadi]]` is a broken edge.
 
@@ -207,9 +205,9 @@ Stop. Do not auto-update any index file (no INDEX exists for contacts). Do not a
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| No contact found by name | Typo, contact not yet scaffolded | Graceful no-match message; suggest `/contact-add` (planned). No file mutation. |
+| No contact found by name | Typo, contact not yet scaffolded | Graceful no-match message; offer a separately approved profile-creation task. No file mutation. |
 | Multi-match (2+ candidates) | Query is ambiguous | `AskUserQuestion` disambiguation per Step 1. If `AskUserQuestion` unavailable (subagent context), list candidates inline and stop — caller re-invokes with a more specific query. |
-| Contact file lacks `## Interaction log` section | Schema violation (manual edit broke convention, or pre-schema legacy file) | Abort with schema-violation error. Do NOT auto-create. Suggest fixing the file or running `/contact-update` (planned). |
+| Contact file lacks `## Interaction log` section | Schema violation (manual edit broke convention, or pre-schema legacy file) | Abort with schema-violation error. Do NOT auto-create during logging; offer a separate schema repair. |
 | User declines topic / cancels mid-flow | Changed mind, distraction | Abort cleanly: *"Nothing logged. Run /contact-log again when ready."* No mutation. |
 | User gives sparse input ("nothing happened") | Genuinely uneventful interaction | Accept. Write minimal entry with topic + `- (no specific decisions or commitments)`. **Never fabricate specifics.** |
 | Edit #1 (frontmatter) fails | `last_interaction:` line format unexpected (e.g., trailing inline comment, weird whitespace) | Abort, report error. Do NOT fall back to `Write`. Surface the literal `old_string` mismatch so user can fix the file. |
@@ -217,7 +215,7 @@ Stop. Do not auto-update any index file (no INDEX exists for contacts). Do not a
 | File modified between Read and Edit | Concurrent edit, git pull, etc. | Edit's built-in safety catches this — surface the error and re-prompt the user to re-run. |
 | `AskUserQuestion` not available (subagent context) | Worker subagent runs lack the tool | Pre-extract topic + body from the invocation prompt if possible (e.g., `log my 1:1 with alex — discussed MCP, agreed on auth pattern`). If extraction fails, abort cleanly — do not invent. |
 | User invokes on a `status: personal` or `status: family` contact | Logging interaction with a friend | Works normally. No special handling. The status field doesn't gate `/contact-log`. |
-| Body mentions a person with no contact file | Not everyone is a contact | Leave name as plain text — no wikilink to a nonexistent target, no auto-scaffold. Suggest `/contact-add` only if they seem recurring. |
+| Body mentions a person with no contact file | Not everyone is a contact | Leave name as plain text — no wikilink or auto-scaffold. Offer profile creation only if they seem recurring. |
 | Back-link `ls` check skipped under time pressure | Lazy compose | Regression — the iron law is one `ls`; entries without `[[contacts/<slug>]]` links for known people are broken edges for /find and any graph layer. |
 | Configuration values missing | Fresh fork without `/bootstrap` run | Error: *"Configuration section in root CLAUDE.md not populated. Run `/bootstrap` (TBD) or fill it in manually first."* |
 
@@ -226,12 +224,12 @@ Stop. Do not auto-update any index file (no INDEX exists for contacts). Do not a
 This skill is **write-only and narrowly scoped**. It MUST NOT:
 
 - Modify any file other than the matched contact file.
-- Modify any frontmatter field other than `last_interaction`. (Use `/contact-update` for those — planned.)
+- Modify any frontmatter field other than `last_interaction`; that requires a separate explicit task.
 - Modify the body sections About / Recurring topics / Open commitments. (Those are not in this skill's mutation surface.)
 - Rewrite, merge, summarize, or reformat prior `## Interaction log` entries.
 - Auto-create a missing `## Interaction log` section. (Schema violation → abort.)
 - Write to `memory/YYYY-MM-DD.md` (the daily log). (Per single-source rule.)
-- Scaffold a brand-new contact file. (Use `/contact-add` — planned.)
+- Scaffold a brand-new contact file during an interaction-log invocation.
 - Use the `Write` tool to mutate the contact file. (Use `Edit` only.)
 
 If <user.name> asks for any of the above during the same turn, complete the log-append action first, then suggest the appropriate skill — do not silently invoke it.
@@ -250,7 +248,7 @@ Logged interaction with <name> at <workspace.root>/<workspace.resources>/contact
 No contact named "<query>" in <workspace.root>/<workspace.resources>/contacts/.
 
 Options:
-- Add them: /contact-add <query>   (coming soon — Pass 4 #35)
+- Add them: ask to create a profile from the canonical contacts schema (separate approval)
 - Check spelling: ls <workspace.root>/<workspace.resources>/contacts/
 ```
 
@@ -266,4 +264,4 @@ Fix the file's schema first (add `## Interaction log` heading), then re-run /con
 Nothing logged. Run /contact-log again when you're ready.
 ```
 
-These four formats are stable — Layer 3 skills (`/briefing`, `/meeting-prep`) and audit tooling will look for "Logged interaction with" lines in transcripts.
+These four formats are stable — briefing and audit tooling may look for "Logged interaction with" lines in transcripts.

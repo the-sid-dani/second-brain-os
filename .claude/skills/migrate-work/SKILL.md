@@ -1,6 +1,6 @@
 ---
 name: migrate-work
-description: Bring a user's EXISTING work into their second-brain-os PARA workspace by reading their past Claude Cowork sessions (local transcripts on disk) — discovering the projects they've actually been working on, then scaffolding the chosen ones as organized PARA entries (1-Projects or 4-Resources) with a CLAUDE.md + memory.md seeded from the session context. Read-only discovery + a fan-out of scout subagents (one per discovered project) + a SINGLE approval gate, then copy-never-move writes. Offered at the end of `/bootstrap` and re-invokable anytime. Use when the user says "/migrate-work", "bring in my existing work", "import my projects", "I have existing projects to bring over", "organize my past work", "migrate my cowork sessions". Hard invariants live in SKILL.md body — copy-never-move, read-only discovery, one approval gate, no fabrication, runnable code routes to the coding bucket (`<workspace.coding>`), never auto-commit.
+description: Bring a user's EXISTING work into their second-brain-os PARA workspace by reading past local Cowork sessions, discovering real projects, and scaffolding only approved non-code entries in Projects or Resources. Read-only discovery, one approval gate, copy-never-move writes, no fabrication, and no auto-commit. Runnable code stays in place or moves only to an owning Area's ignored `apps/` subtree after explicit approval; the grandfathered coding bucket is not a destination for new work. Use for "/migrate-work", "bring in my existing work", "import my projects", or "migrate my cowork sessions".
 allowed-tools: Read Bash Glob AskUserQuestion Skill Task
 ---
 
@@ -16,10 +16,10 @@ Pulls your existing work into your PARA workspace. The signal is your **past Cla
 - **M2 — DISCOVERY IS PURE READ.** Phase 1 (enumerate sessions, read transcripts, scout-summarize) touches nothing on disk. No write happens before the approval gate. Every probe verb is read-only.
 - **M3 — ONE APPROVAL GATE.** Exactly one human stop: the barrier between discovery and writes. Nothing is scaffolded or copied until the user explicitly selects items. Low-confidence/flagged items are never auto-applied.
 - **M4 — NO FABRICATION.** Every discovered "project," summary, and seeded memory line traces to real session content. Never invent a project, a purpose, or a decision the transcript doesn't show. If a session is ambiguous, flag it for the user — don't guess. (Recency-derived *metadata* — `suggested_status`, date range — is allowed ONLY as a LABELED inference confirmed at the approval gate; transcript-derived claims — summary, decisions, seed_memory — must be grounded in actual session content.)
-- **M5 — CODE PLACEMENT.** Any runnable code (a git repo, a `package.json`/`pyproject`/`Cargo.toml` tree, scripts) routes to `<workspace.coding>/` (gitignored) or stays a standalone repo with a pointer — NEVER copied into `1-Projects/`, `4-Resources/`, or `0-Inbox/`. (Locked code-placement rule.)
+- **M5 — CODE PLACEMENT.** Runnable code stays in its existing standalone repository or, after the user identifies an owning Area, may be copied into `<workspace.areas>/<area>/apps/<app>/` (ignored by the outer repo). NEVER copy runnable code into Projects, Resources, Inbox, or the grandfathered `<workspace.coding>` bucket.
 - **M6 — NEVER AUTO-COMMIT.** Writes create new files in the workspace; stop at the diff and surface a manual commit command. Never `git add`/`git commit`.
 
-All paths resolve from the Configuration section in root `CLAUDE.md` (`<workspace.root>`, `<workspace.projects>`, `<workspace.resources>`, `<workspace.coding>`). Read those first.
+All paths resolve from the Configuration section in root `CLAUDE.md` (`<workspace.root>`, `<workspace.projects>`, `<workspace.resources>`, `<workspace.areas>`). Read those first.
 
 ---
 
@@ -63,7 +63,7 @@ For each candidate, spawn a **read-only scout** via the `Task` tool, in parallel
 - Returns a structured proposal (NEVER writes anything):
   - `project_name` + `one_line_summary` (from real transcript content; M4)
   - `suggested_bucket`: `1-Projects` (active, time-bound work) | `4-Resources` (reference/research/notes) — the only two targets unless it's clearly a code repo
-  - `is_code`: true if `cwd` is a runnable code tree (→ M5: route to `3-Coding`, flag, don't fold into a project folder)
+  - `is_code`: true if `cwd` is a runnable code tree (→ M5: leave standalone or propose an owning Area app; never fold into a tracked project)
   - `suggested_status`: active | paused | done — an INFERENCE from recency (`lastActivityAt`), NOT a transcript fact; surfaced at the approval gate and only written as `status:` after the user confirms
   - `seed_memory`: 2-5 bullet points of durable context/decisions actually present in the transcript
   - `cwd_has_files`: whether real source files exist to optionally copy in
@@ -80,7 +80,7 @@ Present a single, scannable picture: *"From your Cowork sessions I found these p
 The user picks which to bring in. For each picked item also confirm, in the same gate or a short follow-up:
 - target bucket (`1-Projects` vs `4-Resources`) — default to the scout's suggestion,
 - whether to **copy the work files** from its `cwd` too (default: scaffold the PARA entry seeded from the session; copy files only if the user says yes),
-- code repos: confirm they go to `<workspace.coding>/` (M5), not into a project folder.
+- code repos: confirm they stay standalone or identify an owning Area app destination (M5), not a tracked project folder.
 
 Nothing is written until the user has selected. Cancel = stop, zero changes.
 
@@ -112,7 +112,7 @@ For each approved item, in sequence:
            "<cwd>/" "<dest>/"
      ```
    - Originals stay exactly where they are.
-   - **If it's runnable code (M5):** do NOT copy into the project/resource folder at all — it belongs in `<workspace.coding>/`. Add a one-line pointer + an index row in `<workspace.resources>/code-projects.md` and leave the repo where it is (copy into `<workspace.coding>/` only if the user explicitly asks for a working copy there).
+   - **If it's runnable code (M5):** do NOT copy into the project/resource folder. Leave the repo where it is and add a pointer in the approved planning note. If the user explicitly identifies an owning Area and approves a copy, target `<workspace.areas>/<area>/apps/<app>/`, preserving independent git/dependencies/secrets/deploys and adding `app.manifest.json`. Do not append new work to the grandfathered code index.
 4. **Log** the migration (what was scaffolded, what was copied vs referenced).
 
 After all approved items: print a summary of what was created, then surface the manual commit command as TEXT (M6 — never run it):
@@ -133,15 +133,15 @@ Review and commit when ready:
 | Reported projects that don't exist in any session | M4 violated — fabrication | Every candidate traces to real session metadata + transcript; flag ambiguous, never invent |
 | Moved/renamed a user's folder | M1 violated | COPY only (`cp`); originals are never touched. State this up front |
 | Wrote files before the user picked | M3 violated | Phase 1+2 are read-only/selection only; Phase 3 runs only on explicitly approved items |
-| Code repo folded into `1-Projects/` with its secrets | M5 violated | Runnable code → `<workspace.coding>/` + pointer; never into project/resource/inbox folders |
+| Code repo folded into `1-Projects/` with its secrets | M5 violated | Leave it standalone or use an approved owning Area app + pointer; never tracked content buckets |
 | Choked reading 1MB session metadata × N | loaded whole blobs | Extract only `title`/`cwd`/`createdAt`/`lastActivityAt` via jq; sample transcripts (head/tail/N turns), never load whole files |
 | "No sessions" treated as an error | absent Cowork dir on this fork | Degrade gracefully — say there's nothing to import and stop; never assume work exists |
 | Auto-committed the migration | M6 violated | Surface the commit command as text only |
-| Delegated `/new-project` auto-committed or pushed a repo | routed a code candidate into `/new-project`'s code-repo branch | NEVER call `/new-project` with `type=code-repo`; code → pointer + `code-projects.md` row only (M5) |
+| Delegated `/new-project` auto-committed or pushed a repo | routed a code candidate into `/new-project`'s code-repo branch | NEVER call `/new-project` with `type=code-repo`; code stays standalone or uses an approved Area app destination (M5) |
 | `.git/` or a `.env` copied into a project folder | used `cp -R` (no exclude) or skipped the secret pre-scan | Use the `rsync --exclude` command; run the mandatory secret pre-scan; `.git/` is always excluded |
 
 ## Boundaries
 
-- **Copy, never move** (M1) · **discovery is read-only** (M2) · **one approval gate** (M3) · **no fabrication** (M4) · **runnable code → `<workspace.coding>/`** (M5) · **never auto-commit** (M6).
+- **Copy, never move** (M1) · **discovery is read-only** (M2) · **one approval gate** (M3) · **no fabrication** (M4) · **runnable code stays standalone or uses an approved owning Area app** (M5) · **never auto-commit** (M6).
 - Reads ONLY the user's own local Cowork/Claude Code session files — never anyone else's data, never the network.
 - The two valid migration targets are `1-Projects/` (active, time-bound) and `4-Resources/` (reference/research). Evergreen areas (`2-Areas/`) and archive (`5-Archive/`) are not auto-created here — surface them as a suggestion if a candidate clearly fits, but let the user place those deliberately.

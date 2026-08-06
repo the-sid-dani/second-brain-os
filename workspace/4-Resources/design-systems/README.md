@@ -8,6 +8,7 @@ will read it as part of its system prompt.
 
 - **`default/`** — Neutral Modern. Hand-authored starter for the OD spec.
 - **`warm-editorial/`** — Warm Editorial. Hand-authored serif starter.
+- **`sid-youtube/`** — Sid Dani's approved operational Editorial Tactile YouTube identity.
 - **69 product systems**, imported from
   [`VoltAgent/awesome-design-md`](https://github.com/VoltAgent/awesome-design-md)
   (the [`getdesign@latest`](https://www.npmjs.com/package/getdesign) npm

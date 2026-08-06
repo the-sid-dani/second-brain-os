@@ -2,7 +2,6 @@
 name: bootstrap
 description: Interactive first-run setup for a fresh fork of the second-brain-os — THE entry point every fork user runs once to configure their identity, name their assistant's persona (no default name — fork users always name their own), pick a design system, create the PARA workspace, and write the Configuration token block in root CLAUDE.md. A short, plain-language guided walkthrough for knowledge workers (~8-10 min) with AskUserQuestion gates and a brief why-it-matters intro on each step; nothing is installed, nothing is committed, every write asks first. When core setup finishes, it offers two OPTIONAL go-further steps — learning your writing voice from your own sent Slack/Gmail messages (with consent), and bringing your existing work in via `/migrate-work`. Detects re-runs via `setup_completed:` and refuses gracefully. Use after cloning the repo, or to reconfigure identity / persona / workspace — phrases like "/bootstrap", "I just cloned this", "first-time setup", "configure the assistant". Tiger invariants T1-T4 (never overwrite user-edited persona files, never re-run on a configured fork, never auto-commit, never install tools) live in SKILL.md body.
 allowed-tools: Read Write Edit Bash AskUserQuestion Skill
-disable-model-invocation: true
 ---
 
 # bootstrap
@@ -23,7 +22,7 @@ If a root persona file (`SOUL.md`, `USER.md`, `IDENTITY.md`, `CLAUDE.md`, `READM
 
 ### T2 — NEVER re-run on an already-configured fork without explicit user action
 
-Step 1 detects re-run via `grep -E "^- \`setup_completed\` = " CLAUDE.md`. If found, refuse and print: *"This fork is already configured (setup_completed: <date>). To re-run /bootstrap, delete the `setup_completed` line in CLAUDE.md and invoke /bootstrap again, or use `/update-config` for partial edits."* Do NOT proceed past Step 1. (The two optional go-further steps are separately re-invokable — see Step 6 — and do not trip T2.)
+Step 1 detects re-run via `grep -E "^- \`setup_completed\` = " CLAUDE.md`. If found, refuse and print: *"This fork is already configured (setup_completed: <date>). To re-run /bootstrap, delete the `setup_completed` line in CLAUDE.md and invoke /bootstrap again. For partial edits, update the root Configuration section and the relevant persona file directly with the user's approval."* Do NOT proceed past Step 1. (The two optional go-further steps are separately re-invokable — see Step 6 — and do not trip T2.)
 
 ### T3 — NEVER auto-commit
 
@@ -279,8 +278,8 @@ After fetching, **show what was read** (count + date range) for transparency. **
 
 ## Re-run mechanism
 
-Re-run gate = the `setup_completed: <date>` line in CLAUDE.md's `### lifecycle` section. Present = configured (refuse, point at `/update-config`). Absent = fresh fork (proceed).
+Re-run gate = the `setup_completed: <date>` line in CLAUDE.md's `### lifecycle` section. Present = configured (refuse and point to direct, scoped Configuration/persona edits). Absent = fresh fork (proceed).
 
 To re-run core setup: delete the `setup_completed` line, invoke `/bootstrap`. Steps 2 and 5b are idempotent; 5a protects user-edited files via T1; 6a overwrites Configuration with fresh values; 6b re-runs the smoke test.
 
-The two optional extras are **independently re-invokable any time** (they don't depend on fresh-fork state): the writing-voice step protects an existing `memory/writing-style.md` with a keep/regenerate gate, and `/migrate-work` is its own skill. For lighter partial edits (just your name, the brand, one persona file) — use `/update-config`.
+The two optional extras are **independently re-invokable any time** (they don't depend on fresh-fork state): the writing-voice step protects an existing `memory/writing-style.md` with a keep/regenerate gate, and `/migrate-work` is its own skill. For lighter partial edits (just a name, brand, or persona file), edit only the canonical root Configuration/persona source after confirming the exact change.

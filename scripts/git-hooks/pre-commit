@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+# pre-commit — secret scan on staged changes (BLOCKING).
+# Your second brain will hold notes, configs, and scaffolds — this stops an
+# accidentally pasted API key or token from ever entering git history.
+set -eu
+
+if command -v gitleaks >/dev/null 2>&1; then
+  if ! gitleaks protect --staged --no-banner --redact; then
+    echo "" >&2
+    echo "pre-commit: gitleaks found a potential secret in your staged changes." >&2
+    echo "Remove it (or add a .gitleaks.toml allowlist entry if it's a false positive) and retry." >&2
+    exit 1
+  fi
+else
+  echo "pre-commit: WARNING — gitleaks not installed; skipping secret scan." >&2
+  echo "Install it (brew install gitleaks) to protect your commits." >&2
+fi

@@ -47,6 +47,16 @@
             "timeout": 4
           }
         ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/okf-connect-before-create.mjs\"",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PreCompact": [
@@ -68,6 +78,11 @@
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/post-edit-diagnostics.mjs\"",
             "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/okf-index-regen.mjs\"",
+            "timeout": 10
           }
         ]
       }
@@ -90,8 +105,11 @@
       "Bash(git -C * push https://bitbucket.org/sambatv/*)",
       "Bash(git push https://bitbucket.org/sambatv/*)",
       "Bash(git -C * push https://bitbucket.org/sambatv/*)",
-      "Bash(git push https://bitbucket.org/sambatv/*)",
-      "Bash(git -C * push https://bitbucket.org/sambatv/*)"
+      "Write(~/Desktop/3-Content/**)",
+      "Edit(~/Desktop/3-Content/**)",
+      "Bash(mkdir -p ~/Desktop/3-Content/*)",
+      "Bash(ls ~/Desktop/3-Content/*)",
+      "Bash(python3 *.claude/skills/yt-competitive-analysis/analyze.py *)"
     ]
   }
 }

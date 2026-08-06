@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-08-06
+
+### Changed — thin-Areas model + skill library consolidated
+
+- **Thin-Areas model is now the documented core.** Areas (`2-Areas/`) hold exactly three tracked knowledge files — `CLAUDE.md` (rules) + `memory.md` (working memory) + machine-generated `index.md` — plus an optional ignored `apps/<name>/` subtree for Area-owned software. ALL tracked content lives in projects (`1-Projects/` while active, `5-Archive/` when done). Root `CLAUDE.md` rewritten around this model, including the completion ritual and the 4 documentation-maintenance rules.
+- **Workspace naming standard** locked (5 principles + 11 conventions C1–C11), v1.3: `PROJ-` for general non-code work, `COD-` for code-related planning, `VID-YYYY-MM-<slug>` for one-video projects.
+- **Skill library consolidated 45 → 29** (15 core + 14 `design-*`). Removed skills whose jobs moved into the harness, other skills, or written principles: `atlassian-attach`, `autonomous`, `autonomous-research`, `bootup`, `budget-tracker`, `company-research`, `confluence-publish-markdown`, `create-handoff`, `desktop-organizer`, `jira-decompose-epic`, `people-research`, `premortem`, `research`, `resume-handoff`, `review`, `scaffold-engineering-project`, `sync-indexes`, `upgrade-harness`. Session handoff now lives in hooks (`auto-handoff-stop` + `pre-compact`), not a skill pair.
+- **Core skills updated across the board** — `archive-project`, `bootstrap`, `briefing`, `contact`, `contact-log`, `inbox-process`, `migrate-work`, `new-project`, `os-guide`, `save-resource` all revised for the thin-Areas model, Area-owned `apps/` routing, and tightened invariants.
+- **`.claude/tools/` Python helpers removed** (`exa_search.py`, `nia_docs.py`, `ouros_harness.py`) — superseded by MCP connectors; `.env.example` and `install.sh` trimmed to match.
+- Hooks updated: `intent-detector` routing-table refresh, `external-action-guard`, handoff writer.
+
+### Added
+
+- **OKF placement enforcement ships.** Two new hooks: `okf-connect-before-create.mjs` (PreToolUse — show-and-ask on 5 placement violation classes: content in Areas, code in committed buckets, near-duplicate slugs/folders/basenames) and `okf-index-regen.mjs` (PostToolUse — keeps machine-generated `index.md` files fresh on live edits), plus the shared `lib/okf-index.mjs` generator.
+- **`/reindex`** ships — bulk-rebuild machine-generated `index.md` files across Projects/Areas/Resources (the hook covers live edits; this covers moves and bulk changes).
+- **`/use-design`** ships (new first-party skill) — swap the active root `DESIGN.md` for any brand in the catalog, with a list mode and a guard that preserves a customized root file.
+- **Design-system brand catalog** — ~70 ready-made brand `DESIGN.md` token files under `4-Resources/design-systems/` (Stripe, Vercel, Notion, Linear, …), each with a generated `index.md`.
+- **`/skill-creator`** ships — create, improve, and eval skills.
+- **`/inbox-process` root-audit mode** with documented routing rules (`references/root-routing.md`).
+- **`AGENTS.md` → `CLAUDE.md` symlink at root** — Codex/Cursor-style agents that read `AGENTS.md` get the same OS instructions with zero duplication.
+- **Pre-commit secret scan for forks** — `scripts/git-hooks/pre-commit` (blocking gitleaks scan on staged changes; warns if gitleaks isn't installed) plus `scripts/install-git-hooks.sh` to wire it up (`git config core.hooksPath`). Run once after cloning.
+
+### Notes
+
+Skill count 45 → 29; hook count 8 → 10. Extractor now excludes maintainer-personal brand folders from the design-system catalog.
+
 ## [0.4.0] - 2026-06-24
 
 ### Changed — onboarding rebuilt for knowledge workers
