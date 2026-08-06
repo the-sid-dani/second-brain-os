@@ -1,45 +1,49 @@
 ---
 name: design-blog-post
-description: 'A long-form article / blog post — masthead, hero image placeholder, article body with figures and pull quotes, author byline, related posts. Use when the brief asks for "blog", "article", "post", "essay", or "case study".'
+description: 'Generates a long-form article page as one self-contained HTML artifact — masthead, article header, hero figure, 600+ word real body with pull quote and figures, author footer, related posts. Reads brand tokens from root DESIGN.md; emits between <artifact> tags. Use when the brief asks for a "blog post", "article", "essay", "case study", "editorial page", or "write this up as a post". Do NOT trigger for marketing/landing pages (design-saas-landing), pricing (design-pricing-page), decks (design-simple-deck), generic page mockups (design-web-prototype), changes to an existing artifact (design-tweaks), or a judgment/review of one (design-critique).'
 ---
 
-# Blog Post Skill
+# design-blog-post
 
-Produce a single long-form article page — editorial layout, no chrome.
+One long-form article page — editorial layout, real prose, zero marketing chrome.
 
-## Workflow
+Long-form is 70% type, 20% image, 10% chrome. If the page reads like a landing page with paragraphs, it failed.
 
-1. **Read the active DESIGN.md** (injected above). Lean into the typography
-   tokens — long-form is 70% type, 20% image, 10% chrome.
-2. **Pick the topic** from the brief and write a real article — at least 600
-   words across 4–6 H2 sections. No lorem ipsum.
-3. **Sections**, in order:
-   - **Masthead** — small wordmark + 4–6 nav links, plain.
-   - **Article header** — category eyebrow, headline (display token, large),
-     deck (1–2 sentence subhead), author name + role + date.
-   - **Hero image** — a 16:9 placeholder block using a DS-tinted gradient or
-     solid fill (no external images). Add a 1-line caption underneath.
-   - **Body** — alternating prose paragraphs with at least:
-     - 1 pull quote (large display type, accent rule on the left).
-     - 1 figure (image placeholder + caption).
-     - 1 list (numbered or bulleted).
-     - 1 inline blockquote.
-   - **Author footer** — author avatar (initials in a circle), bio paragraph.
-   - **Related** — 3 cards linking to other posts. Each card: tiny image
-     block, title, 1-line excerpt, date.
-4. **Write** a single HTML document:
-   - `<!doctype html>` through `</html>`, CSS inline.
-   - Article body uses the DS body font, centered, max-width per DS layout
-     rule (typically 680–720px).
-   - Drop caps (`first-letter`) only if the DS mood is editorial / serif —
-     skip on tech-y DSes.
-   - `data-od-id` on the headline, hero, body, pull quote, related grid.
-5. **Self-check**:
-   - Type hierarchy is unambiguous — H1 is clearly the headline; H2s are
-     section dividers; pull quotes do not compete with H1.
-   - Line length 60–75 chars for body prose.
-   - Accent appears at most twice (eyebrow + pull-quote rule, or one link).
-   - The page reads like a magazine, not a marketing landing.
+## When to use
+
+- "write a blog post about X" / "turn this into an article"
+- "draft an essay page on Y" / "case study page for Z"
+- "make this look like a magazine piece"
+
+Do NOT trigger for:
+- Product/marketing pages — `design-saas-landing` or `design-web-prototype`.
+- Pricing — `design-pricing-page`. Decks — `design-simple-deck`.
+- "tweak the article you made" — `design-tweaks`. "review this article page" — `design-critique`.
+- Plain markdown writing with no visual deliverable — just write it, no artifact.
+
+## Process
+
+1. **Read root `DESIGN.md`** (repo root, next to CLAUDE.md). Extract: color tokens, display + body fonts, layout max-width, depth rules. If missing → stop, tell the user to run `/use-design <brand>` (library at `<workspace.root>/<workspace.resources>/design-systems/`).
+2. **Pin the topic.** If the brief gives only a title, ask for two things before writing: the core argument and the audience. Never pad a vague brief with generic prose.
+3. **Write the article first, HTML second.** At least 600 words across 4–6 H2 sections. Real claims, real specifics from the brief. No lorem, no invented statistics.
+4. **Assemble sections in this exact order:**
+   1. **Masthead** — small wordmark + 4–6 nav links, plain.
+   2. **Article header** — category eyebrow, H1 headline (display font, large), 1–2 sentence deck, author name + role + date.
+   3. **Hero figure** — 16:9 placeholder block using a DESIGN.md-tinted solid or gradient (no external images), 1-line caption.
+   4. **Body** — prose paragraphs plus at least: 1 pull quote (display type, accent rule left), 1 figure with caption, 1 list, 1 inline blockquote.
+   5. **Author footer** — initials-in-circle avatar, bio paragraph.
+   6. **Related** — 3 cards: tiny image block, title, 1-line excerpt, date.
+5. **Build one HTML document.** `<!doctype html>` through `</html>`, all CSS in one `<style>` block. Body column centered, max-width per DESIGN.md (typically 680–720px). Drop caps only if the brand mood is editorial/serif. `data-od-id` on headline, hero, body, pull quote, related grid. No JS, no external requests.
+6. **Self-check before emitting:**
+
+| Check | Pass condition |
+|-------|----------------|
+| Colors | Every value traces to a DESIGN.md token — no invented hex |
+| Hierarchy | H1 unambiguous; pull quote never competes with it |
+| Measure | Body line length 60–75 chars |
+| Accent | ≤ 2 uses (eyebrow + pull-quote rule, or one link style) |
+| Content | ≥ 600 real words, zero filler |
+| Read test | Feels like a magazine, not a landing page |
 
 ## Output contract
 
@@ -53,3 +57,33 @@ Emit between `<artifact>` tags:
 ```
 
 One sentence before the artifact, nothing after.
+
+## Example — structure sketch of a great result
+
+```html
+<!-- "Why On-Device Classification Wins" — Ferrari DS: white panel, red accent x2 -->
+<header>wordmark · Product / Engineering / Research / About</header>
+<article style="max-width:700px">
+  <p class="eyebrow">ENGINEERING · EDGE AI</p>          <!-- accent use 1 -->
+  <h1>Why on-device classification wins</h1>            <!-- display font -->
+  <p class="deck">Latency, privacy, and cost all point the same way.</p>
+  <p class="byline">Alex Chen · CTO Office · 2026-07-06</p>
+  <figure class="hero-ph">[16:9 tinted block]<figcaption>Chipset inference path</figcaption></figure>
+  <h2>The latency argument</h2> <p>…real prose…</p>
+  <blockquote class="pull">"The round trip is the product tax."</blockquote> <!-- accent rule, use 2 -->
+  <h2>What it costs to ship</h2> <ol>…3 items…</ol>
+  <figure>[chart placeholder]<figcaption>Cost per 1M classifications</figcaption></figure>
+</article>
+<footer class="author">JA avatar · bio paragraph</footer>
+<section class="related">3 cards: title · excerpt · date</section>
+```
+
+## Failure modes
+
+| Symptom | Fix |
+|---------|-----|
+| Root `DESIGN.md` missing | Stop. Tell user: `/use-design <brand>` |
+| Brief is just a title | Ask for core argument + audience before writing |
+| Article under 600 words | Content problem, not layout — go deeper on the brief, don't pad |
+| Brand is tech-minimal but drop caps look off | Skip drop caps; they are editorial-serif only |
+| Tempted to embed a stock photo URL | Never — tinted placeholder block + caption |

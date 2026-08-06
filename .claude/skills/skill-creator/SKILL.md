@@ -68,6 +68,21 @@ Based on the user interview, fill in these components:
 - **compatibility**: Required tools, dependencies (optional, rarely needed)
 - **the rest of the skill :)**
 
+### House quality bar (this workspace)
+
+Skills born in this repo should match the bar the existing skills set — look at a couple of siblings in `.claude/skills/` (e.g., `archive-project`, `prune-projects`) to see the pattern live. Before calling a draft done, check:
+
+- [ ] **Description carries trigger phrases** — concrete user phrasings ("archive the X project", "what's stale?"), not just a capability summary. It's the sole routing signal.
+- [ ] **Description carries "Do NOT trigger for"** — name the neighboring skills that should win instead. Near-miss routing is where skills fail.
+- [ ] **Paths resolve via Configuration tokens** (`<workspace.root>/<workspace.projects>/...`) — never hardcoded workspace paths. Tokens live in root `CLAUDE.md` §Configuration; forks rename folders.
+- [ ] **Output format is pinned** — where files land, naming convention, or the exact response shape.
+- [ ] **At least one concrete example** — a realistic invocation with its expected result.
+- [ ] **Failure modes table** — symptom → cause → fix, covering missing inputs, missing tools, and mid-run aborts (is partial state defined?).
+- [ ] **Safety invariants hold** — never auto-commit, never auto-send to external surfaces, destructive ops (delete/force/reset) always ask first. Mutations gate behind `AskUserQuestion`.
+- [ ] **Registered after landing** — tell the user to run `/os-guide --sync` so the new skill enters the routing table.
+
+Skip items only when they genuinely don't apply (a read-only skill has no mutation gates) — not because they're effort.
+
 ### Skill Writing Guide
 
 #### Anatomy of a Skill

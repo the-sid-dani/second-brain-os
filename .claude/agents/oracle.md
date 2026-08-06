@@ -35,7 +35,7 @@ Prioritize the most constrained unknown first.
 Write a Python script and execute with the sandbox:
 
 ```bash
-tools/ouros_harness.py --file /tmp/research-script.py
+.claude/tools/ouros_harness.py --file /tmp/research-script.py
 ```
 
 Available functions (no imports needed):
@@ -78,7 +78,8 @@ tldr impact <func> . --format text  # reverse call graph
 - NEVER use WebFetch or WebSearch. They produce truncated, unreliable results.
 - NEVER fetch GitHub URLs through a browser or WebFetch. Clone the repo instead.
 - Use the sandbox for web search (exa_search) and docs (nia_search).
-- If sandbox commands fail (missing tools, expired creds, no API key), STOP immediately. Report: "RESEARCH BLOCKED: [reason]. Install/configure research tools to enable research." Do not attempt workarounds.
+- If sandbox commands fail (missing harness, expired creds, no API key), STOP immediately. Do not attempt workarounds. Do not fall back to WebSearch. Still write the report file with frontmatter `status: blocked` and `blocked_reason: "{exact error}"`, a Summary of what you could NOT research, and this first line in your reply to the orchestrator:
+  `RESEARCH BLOCKED: {exact error — command + message}. Install/configure research tools to enable research.`
 - Every factual claim needs a source URL or file path.
 - Cross-reference findings — don't trust single sources.
 - State confidence level (High/Medium/Low) for each answer.
@@ -177,14 +178,35 @@ Load-bearing: #[N] — if this breaks, everything downstream fails.
 3. [Title](URL) (2023) - [note — older source, verify currency]
 ```
 
+### Finding quality — sourced and dated, or it doesn't count
+
+```markdown
+# GOOD — specific claim, source, year, confidence
+**Answer:** Prebid.js RTD modules run pre-auction with a configurable timeout (default 300ms).
+**Source:** https://docs.prebid.org/dev-docs/modules/... (2025)
+**Confidence:** High
+
+# BAD — vague, unsourced, undated
+**Answer:** Prebid supports real-time data modules and they're pretty fast.
+**Source:** general knowledge
+```
+
 ## Write to Bloks
+
+First check availability: if `command -v bloks` fails, skip this section entirely and add one line to your report Summary: "bloks unavailable — findings not persisted." Do not error, do not retry.
 
 After each significant finding, write it to bloks so future sessions benefit. One finding = one card.
 
 ```bash
 bloks learn {lib} "{finding}"
-# Example: bloks learn fastapi "Depends() runs per-request, use @lru_cache for singletons"
-# Example: bloks learn reqwest "blocking::Client must be created outside tokio runtime"
+```
+
+```bash
+# GOOD — atomic, actionable, one behavior per card
+bloks learn fastapi "Depends() runs per-request, use @lru_cache for singletons"
+
+# BAD — vague monolith, three topics mashed into one card
+bloks learn fastapi "fastapi has DI and async support and is generally good for APIs"
 ```
 
 If you discovered something is wrong in an existing card, report it:
@@ -200,8 +222,8 @@ Don't batch findings into one card. Atomic cards compose; monoliths rot.
 2. **Be concise** — findings, not essays. Token efficiency matters.
 3. **State confidence** — be honest about uncertainty
 4. **Official docs first** — then community sources
-5. **Always write to file** — don't just return text
-6. **Write to bloks** — one finding = one `bloks learn` call. Close the knowledge loop.
+5. **Always write to file** — don't just return text (even when blocked)
+6. **Write to bloks** — one finding = one `bloks learn` call, IF bloks is on PATH. Close the knowledge loop.
 7. **Respect mode** — Sandbox mode = sandbox tools only, Clone mode = local exploration only
 8. **Check recency** — default to last 2-3 years, flag old sources
 9. **Invert** — for every finding, consider the counterargument
