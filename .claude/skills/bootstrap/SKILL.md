@@ -149,6 +149,8 @@ git diff --quiet HEAD -- <file> && STATE=CLEAN || STATE=MODIFIED
 - **CLEAN** → substitute + write. *"✅ Wrote `<file>`."*
 - **MODIFIED** (T1) → `AskUserQuestion`: (a) **Skip — keep my edits** (default) / (b) **Show diff** / (c) **Overwrite** / (d) **Save regenerated copy to `<file>.bootstrap-suggested`**.
 
+**Before substituting, verify the template exists** (`test -f <workspace.root>/<workspace.resources>/templates/persona/<file>-template.md`). If it's missing, do NOT run the substitution — a `sed ... > <file>` redirection truncates the existing file to empty before sed can fail. Skip that file, surface *"⚠️ Template for `<file>` missing — skipped, existing file untouched"*, and continue with the rest.
+
 Skip ALL of 5a if Step 4 escape-hatch (b) was chosen.
 
 **5b — Workspace skeleton (idempotent, T4-safe — `mkdir -p` only, never destructive).**
@@ -259,6 +261,7 @@ After fetching, **show what was read** (count + date range) for transparency. **
 | Skill installed a tool/connector | T4 violation | Step 2 + Optional A DETECT and hint only; authorize via `/mcp`, never install |
 | Smoke test passed but new project still has a literal `<user.name>` | 6b ran before 6a | Order is FIXED: 6a (Configuration write) → 6b (smoke test) |
 | Workspace skeleton clobbered existing content | 5b was destructive | `mkdir -p` only — never `rm -rf` |
+| Persona file wiped to empty | 5a substitution ran with a missing template (`> <file>` truncates before sed fails) | 5a checks `test -f <template>` BEFORE substituting; missing template = skip + ⚠️, never write |
 | Voice profile invented phrases the user never wrote | Optional-A synthesis hallucinated | Synthesize from fetched/pasted text only; the preview-before-write gate is the catch |
 | Read someone else's messages, or read without asking | consent gate skipped | Optional A reads ONLY the user's own sent messages, ONLY after explicit consent |
 
