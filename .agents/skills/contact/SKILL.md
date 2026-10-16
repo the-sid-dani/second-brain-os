@@ -45,7 +45,7 @@ When both could trigger (e.g., "tell me about alex"):
 
 ## Source of truth
 
-Every contact lives at `<workspace.root>/<workspace.resources>/contacts/<slug>.md` with the schema documented at `<workspace.root>/<workspace.resources>/contacts/README.md`. Required frontmatter: `name`, `email`, `role`, `team`, `company`, `relationship`, `status`, `first_logged`, `last_interaction`. Optional: `legal_name`, `recurring_cadence`, `tags`, `slack_handle`, `timezone`, `linkedin`, `reports_to`, `location`, `department`, `division`, `work_phone`. Body sections: About, Recurring topics, Open commitments (To/From split), Interaction log.
+Every contact lives at `<workspace.root>/<workspace.resources>/contacts/<slug>.md` with the schema documented at `<workspace.root>/<workspace.resources>/contacts/README.md` — **that README is the single source of truth for frontmatter fields (required + optional) and body sections; do not restate the field list here or anywhere else.** The fields this skill depends on by name: `name` and `legal_name` (matching, Step 3), `status` and `last_interaction` (display, Step 5), and the body sections About / Recurring topics / Open commitments (To/From split) / Interaction log (display, Step 5). For everything else, read the README at runtime.
 
 ## Process
 
@@ -184,6 +184,36 @@ If the user asks for any of the above during the same turn, complete the read ac
 | Two contacts share an exact `name` | e.g., two "John Smith" | Both tier 3 hits → multi-match disambig surfaces them with role/team to differentiate |
 | Query is empty after normalization | All special chars | Re-prompt: *"That didn't normalize cleanly — try a name with letters"* |
 | Configuration values missing | Fresh fork | Error: *"Configuration section in root CLAUDE.md not populated. Run `/bootstrap` first (two questions), or fill it in by hand."* |
+
+## Example of a great result (single match)
+
+```
+Morgan Vale — VP Ad Platforms, Demand Products (Acme)
+Relationship: cross-functional collaborator
+Status: active · Last interaction: 2026-06-30
+morgan.vale@acme.com · @mvale · America/Los_Angeles
+
+About:
+Owns the demand-side product line; key stakeholder for the SLM on-device IAB
+classifier's Prebid RTD distribution path. Skeptical of MCP-first framing.
+
+Recurring topics:
+- SLM contextual signal packaging (Prebid RTD vs OpenRTB)
+- AdCP launch-member activation
+
+Open commitments:
+  To Morgan (Alex owes): 1 open
+    - 2026-06-30 — share Phase 2 signal-packaging addendum — by 2026-07-08
+  From Morgan (owes Alex): 0 open
+
+Last interaction:
+### 2026-06-30 — SLM distribution sync
+- Aligned on Prebid RTD as first integration surface; MCP deferred
+
+Mentions: /find [[contacts/morgan-vale]]   (backlink search: every note that links to this person)
+
+Source: workspace/4-Resources/contacts/morgan-vale.md
+```
 
 ## Output format
 

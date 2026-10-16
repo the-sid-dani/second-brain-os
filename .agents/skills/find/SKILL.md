@@ -68,16 +68,16 @@ find memory -type f -iname "*<query>*" 2>/dev/null
 ```
 
 ```bash
-# Content match — prefer ripgrep (fast), fall back to grep -r
+# Content match — literal (fixed-string) search; prefer ripgrep, fall back to grep -r
 if command -v rg >/dev/null 2>&1; then
-  rg -l -i --type md "<query>" \
+  rg -l -i -F --type md "<query>" \
     "<workspace.root>/<workspace.resources>" \
     "<workspace.root>/<workspace.projects>" \
     "<workspace.root>/<workspace.archive>" \
     "<workspace.root>/<workspace.areas>" \
     memory 2>/dev/null
 else
-  grep -r -l -i --include="*.md" "<query>" \
+  grep -r -l -i -F --include="*.md" "<query>" \
     "<workspace.root>/<workspace.resources>" \
     "<workspace.root>/<workspace.projects>" \
     "<workspace.root>/<workspace.archive>" \
@@ -189,6 +189,19 @@ Don't auto-update any index, don't auto-commit, don't propose unrelated next act
 | `AskUserQuestion` unavailable | Subagent context | Default to `synthesize` mode if matches > 0; if 0, return the empty-result message |
 | Configuration values missing | Fresh fork | Error: *"Configuration section in root CLAUDE.md not populated. Run `/bootstrap` first (two questions), or fill it in by hand."* |
 | Topic slugifies to empty | All special chars | Re-prompt: *"That topic didn't slugify cleanly — try one with letters/numbers"* |
+
+## Example of a great result (list mode)
+
+```
+Found 4 matches for "slm distribution":
+
+  📁 workspace/1-Projects/2026-06-slm-ondevice-iab-classifier/memory.md   2026-06-28   6 KB   "Decision: ship via Prebid RTD/OpenRTB first, MCP second"
+  📁 workspace/4-Resources/research/2026-06-slm-distribution-adcp-artf-scope3.md   2026-06-12   18 KB   "AdCP launch membership is dormant → activate"
+  📁 workspace/4-Resources/research/2026-06-slm-leadership-one-pager.md   2026-06-10   4 KB   "distribution: chipset partners vs ad-stack integration"
+  📁 memory/2026-06-04.md   2026-06-04   3 KB   "sketched SLM distribution options with Ralph"
+
+Breakdown: 2 resources · 1 projects · 0 archive · 1 memory
+```
 
 ## Output format
 
